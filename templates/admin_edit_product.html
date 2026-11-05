@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product - Bandozee Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .product-image {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <a href="{{ url_for('index') }}">Bandozee Admin</a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('admin_products') }}">Products</a></li>
+                    <li><a href="{{ url_for('admin_customers') }}">Customers</a></li>
+                    <li><a href="{{ url_for('admin_rentals') }}">Rentals</a></li>
+                    <li><a href="{{ url_for('admin_logout') }}">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="admin-container">
+        <h1>Edit Product</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <img src="{{ product[8] }}" alt="{{ product[1] }}" class="product-image">
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="name">Product Name</label>
+                <input type="text" id="name" name="name" value="{{ product[1] }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Selling Price (R)</label>
+                <input type="number" id="price" name="price" step="0.01" value="{{ product[2] }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="rental_price">Rental Price per Day (R)</label>
+                <input type="number" id="rental_price" name="rental_price" step="0.01" value="{{ product[3] }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" required>{{ product[4] }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    <option value="Head Wear" {% if product[5] == 'Head Wear' %}selected{% endif %}>Head Wear</option>
+                    <option value="Neck Wear" {% if product[5] == 'Neck Wear' %}selected{% endif %}>Neck Wear</option>
+                    <option value="Top Wear" {% if product[5] == 'Top Wear' %}selected{% endif %}>Top Wear</option>
+                    <option value="Bottom Wear" {% if product[5] == 'Bottom Wear' %}selected{% endif %}>Bottom Wear</option>
+                    <option value="Shoes" {% if product[5] == 'Shoes' %}selected{% endif %}>Shoes</option>
+                    <option value="Extra Wear" {% if product[5] == 'Extra Wear' %}selected{% endif %}>Extra Wear</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="subcategory">Subcategory</label>
+                <input type="text" id="subcategory" name="subcategory" value="{{ product[6] }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="Men" {% if product[7] == 'Men' %}selected{% endif %}>Men</option>
+                    <option value="Women" {% if product[7] == 'Women' %}selected{% endif %}>Women</option>
+                    <option value="Unisex" {% if product[7] == 'Unisex' %}selected{% endif %}>Unisex</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+    <label for="product_image">Product Image</label>
+    {% if product[8] and product[8] != '/static/images/placeholder.jpg' %}
+    <div style="margin-bottom: 10px;">
+        <img src="{{ product[8] }}" alt="Current image" style="max-width: 200px; height: auto;">
+    </div>
+    {% endif %}
+    <input type="file" id="product_image" name="product_image" accept="image/*" class="file-input">
+    <small>Leave empty to keep current image. Accepted formats: JPG, PNG, GIF, WebP (Max: 16MB)</small>
+    <div class="file-preview" id="imagePreview">
+        <img id="previewImage" src="#" alt="Image preview">
+    </div>
+</div>
+
+            <div class="form-group">
+                <label for="stock">Stock Quantity</label>
+                <input type="number" id="stock" name="stock" value="{{ product[9] }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="available_for_rent" value="1" {% if product[10] %}checked{% endif %}>
+                    Available for Rent
+                </label>
+            </div>
+
+            <div class="form-group">
+                <a href="{{ url_for('admin_products') }}" class="btn-secondary">Cancel</a>
+                <button type="submit" class="btn-primary">Update Product</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bandozee - Registration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Zulu Color Palette */
+        :root {
+            --zulu-red: #E41B23;
+            --zulu-black: #000000;
+            --zulu-white: #FFFFFF;
+            --zulu-yellow: #F7D038;
+            --zulu-green: #006F3C;
+            --earth-brown: #8B4513;
+            --cream: #F5F5DC;
+            --light-brown: #CD853F;
+        }
+        
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--cream);
+            color: var(--zulu-black);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--zulu-black), var(--earth-brown));
+            color: var(--zulu-white);
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--zulu-white);
+            text-decoration: none;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 2.2rem;
+            color: var(--zulu-red);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        
+        /* Registration Container */
+        .registration-container {
+            background: var(--zulu-white);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+        
+        .registration-header {
+            background: linear-gradient(to right, var(--zulu-black), var(--earth-brown));
+            color: var(--zulu-white);
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .registration-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .registration-header p {
+            opacity: 0.9;
+        }
+        
+        .registration-form {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--earth-brown);
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--zulu-red);
+            outline: none;
+        }
+        
+        .password-input-container {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 4px;
+        }
+        
+        .toggle-password:hover {
+            color: var(--zulu-red);
+        }
+        
+        .password-requirements {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--zulu-red);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .password-requirements h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--earth-brown);
+        }
+        
+        .password-requirements ul {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+        
+        .password-requirements li {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .password-requirements li i {
+            margin-right: 8px;
+            font-size: 0.8rem;
+        }
+        
+        .requirement-met {
+            color: var(--zulu-green);
+        }
+        
+        .requirement-not-met {
+            color: #6c757d;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--zulu-red);
+            color: var(--zulu-white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--earth-brown);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #6c757d;
+        }
+        
+        .form-footer a {
+            color: var(--zulu-red);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(to right, var(--zulu-black), var(--earth-brown));
+            color: var(--zulu-white);
+            padding: 30px 0 15px;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .registration-container {
+                margin: 20px;
+            }
+            
+            .registration-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .registration-form {
+                padding: 20px;
+            }
+        }
+        
+        /* Success Message */
+        .success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <a href="{{ url_for('index') }}" class="logo">
+                <i class="fas fa-vest-patches"></i>
+                <span>Bandozee</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="registration-container">
+            <div class="registration-header">
+                <h1>Create Your Account</h1>
+                <p>Join Bandozee to explore traditional attire</p>
+            </div>
+            
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i> Account created successfully! Redirecting to login...
+            </div>
+            
+            <form class="registration-form" id="registrationForm" method="POST" action="{{ url_for('register') }}">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="Enter your phone number">
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address" rows="3" required placeholder="Enter your full address"></textarea>
+                </div>
+                
+                <div class="password-requirements">
+                    <h3>Password Requirements:</h3>
+                    <ul>
+                        <li id="req-length" class="requirement-not-met">
+                            <i class="fas fa-circle"></i> At least 8 characters
+                        </li>
+                        <li id="req-uppercase" class="requirement-not-met">
+                            <i class="fas fa-circle"></i> One uppercase letter
+                        </li>
+                        <li id="req-lowercase" class="requirement-not-met">
+                            <i class="fas fa-circle"></i> One lowercase letter
+                        </li>
+                        <li id="req-number" class="requirement-not-met">
+                            <i class="fas fa-circle"></i> One number
+                        </li>
+                        <li id="req-special" class="requirement-not-met">
+                            <i class="fas fa-circle"></i> One special character
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-input-container">
+                        <input type="password" id="password" name="password" required placeholder="Create a strong password">
+                        <button type="button" id="togglePassword" class="toggle-password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="password-input-container">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Re-enter your password">
+                        <button type="button" id="toggleConfirmPassword" class="toggle-password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div id="passwordMatchMessage" style="margin-top: 5px; font-size: 0.9rem; display: none;"></div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Create Account</button>
+                
+                <div class="form-footer">
+                    <p>Already have an account? <a href="{{ url_for('login') }}">Sign In</a></p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Bandozee</h3>
+                <p>Bandozee is a Durban-based traditional attire store specializing in authentic African clothing and accessories.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('about') }}">About Us</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Cultural Village, Durban, South Africa</p>
+                <p><i class="fas fa-phone"></i> +27 (031) 123-4567</p>
+                <p><i class="fas fa-envelope"></i> info@bandozee.co.za</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Bandozee Traditional Attire. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registrationForm');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const passwordMatchMessage = document.getElementById('passwordMatchMessage');
+            const togglePasswordButton = document.getElementById('togglePassword');
+            const toggleConfirmPasswordButton = document.getElementById('toggleConfirmPassword');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Password requirements elements
+            const reqLength = document.getElementById('req-length');
+            const reqUppercase = document.getElementById('req-uppercase');
+            const reqLowercase = document.getElementById('req-lowercase');
+            const reqNumber = document.getElementById('req-number');
+            const reqSpecial = document.getElementById('req-special');
+            
+            // Toggle password visibility
+            togglePasswordButton.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Toggle icon
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+            
+            // Toggle confirm password visibility
+            toggleConfirmPasswordButton.addEventListener('click', function() {
+                const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                confirmPasswordInput.setAttribute('type', type);
+                
+                // Toggle icon
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+            
+            // Validate password in real-time
+            passwordInput.addEventListener('input', function() {
+                const password = passwordInput.value;
+                
+                // Check length
+                if (password.length >= 8) {
+                    reqLength.classList.add('requirement-met');
+                    reqLength.classList.remove('requirement-not-met');
+                    reqLength.innerHTML = '<i class="fas fa-check-circle"></i> At least 8 characters';
+                } else {
+                    reqLength.classList.remove('requirement-met');
+                    reqLength.classList.add('requirement-not-met');
+                    reqLength.innerHTML = '<i class="fas fa-circle"></i> At least 8 characters';
+                }
+                
+                // Check uppercase
+                if (/[A-Z]/.test(password)) {
+                    reqUppercase.classList.add('requirement-met');
+                    reqUppercase.classList.remove('requirement-not-met');
+                    reqUppercase.innerHTML = '<i class="fas fa-check-circle"></i> One uppercase letter';
+                } else {
+                    reqUppercase.classList.remove('requirement-met');
+                    reqUppercase.classList.add('requirement-not-met');
+                    reqUppercase.innerHTML = '<i class="fas fa-circle"></i> One uppercase letter';
+                }
+                
+                // Check lowercase
+                if (/[a-z]/.test(password)) {
+                    reqLowercase.classList.add('requirement-met');
+                    reqLowercase.classList.remove('requirement-not-met');
+                    reqLowercase.innerHTML = '<i class="fas fa-check-circle"></i> One lowercase letter';
+                } else {
+                    reqLowercase.classList.remove('requirement-met');
+                    reqLowercase.classList.add('requirement-not-met');
+                    reqLowercase.innerHTML = '<i class="fas fa-circle"></i> One lowercase letter';
+                }
+                
+                // Check number
+                if (/[0-9]/.test(password)) {
+                    reqNumber.classList.add('requirement-met');
+                    reqNumber.classList.remove('requirement-not-met');
+                    reqNumber.innerHTML = '<i class="fas fa-check-circle"></i> One number';
+                } else {
+                    reqNumber.classList.remove('requirement-met');
+                    reqNumber.classList.add('requirement-not-met');
+                    reqNumber.innerHTML = '<i class="fas fa-circle"></i> One number';
+                }
+                
+                // Check special character
+                if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+                    reqSpecial.classList.add('requirement-met');
+                    reqSpecial.classList.remove('requirement-not-met');
+                    reqSpecial.innerHTML = '<i class="fas fa-check-circle"></i> One special character';
+                } else {
+                    reqSpecial.classList.remove('requirement-met');
+                    reqSpecial.classList.add('requirement-not-met');
+                    reqSpecial.innerHTML = '<i class="fas fa-circle"></i> One special character';
+                }
+                
+                // Check if passwords match
+                checkPasswordMatch();
+            });
+            
+            // Check password confirmation in real-time
+            confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+            
+            function checkPasswordMatch() {
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                
+                if (confirmPassword === '') {
+                    passwordMatchMessage.style.display = 'none';
+                    return;
+                }
+                
+                if (password === confirmPassword) {
+                    passwordMatchMessage.textContent = 'Passwords match!';
+                    passwordMatchMessage.style.color = 'green';
+                    passwordMatchMessage.style.display = 'block';
+                } else {
+                    passwordMatchMessage.textContent = 'Passwords do not match!';
+                    passwordMatchMessage.style.color = 'red';
+                    passwordMatchMessage.style.display = 'block';
+                }
+            }
+            
+            // Form submission validation
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                
+                // Validate password requirements
+                const hasMinLength = password.length >= 8;
+                const hasUppercase = /[A-Z]/.test(password);
+                const hasLowercase = /[a-z]/.test(password);
+                const hasNumber = /[0-9]/.test(password);
+                const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+                
+                if (!hasMinLength || !hasUppercase || !hasLowercase || !hasNumber || !hasSpecial) {
+                    alert('Please ensure your password meets all requirements.');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match. Please confirm your password.');
+                    return;
+                }
+                
+                // If all validations pass, submit the form
+                form.submit();
+            });
+        });
+    </script>
+</body>
+</html>

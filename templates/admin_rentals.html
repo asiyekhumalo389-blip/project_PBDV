@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Management - Bandozee Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .admin-table th, .admin-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .admin-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .status-pending { background-color: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 3px; }
+        .status-active { background-color: #d1ecf1; color: #0c5460; padding: 3px 8px; border-radius: 3px; }
+        .status-completed { background-color: #d4edda; color: #155724; padding: 3px 8px; border-radius: 3px; }
+        .btn-process {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <a href="{{ url_for('index') }}">Bandozee Admin</a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('admin_products') }}">Products</a></li>
+                    <li><a href="{{ url_for('admin_customers') }}">Customers</a></li>
+                    <li><a href="{{ url_for('admin_rentals') }}" class="active">Rentals</a></li>
+                    <li><a href="{{ url_for('admin_logout') }}">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="admin-container">
+        <h1>Rental Management</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Rental ID</th>
+                    <th>Customer</th>
+                    <th>Product</th>
+                    <th>Duration</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Rental Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rental in rentals %}
+                <tr>
+                    <td>#{{ rental[0] }}</td>
+                    <td>{{ rental[7] }}<br><small>{{ rental[8] }}</small></td>
+                    <td>{{ rental[9] }}</td>
+                    <td>{{ rental[3] }} days</td>
+                    <td>R{{ "%.2f"|format(rental[4]) }}</td>
+                    <td>
+                        {% if rental[5] == 'pending' %}
+                            <span class="status-pending">Pending</span>
+                        {% elif rental[5] == 'active' %}
+                            <span class="status-active">Active</span>
+                        {% else %}
+                            <span class="status-completed">Completed</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ rental[6] }}</td>
+                    <td>
+                        {% if rental[5] == 'pending' %}
+                            <a href="#" class="btn-process">Approve</a>
+                        {% endif %}
+                        <a href="#">View Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

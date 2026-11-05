@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Bandozee</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .confirmation-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .confirmation-card {
+            background: #fff;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 2px solid #28a745;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+
+        .confirmation-title {
+            color: #28a745;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .order-details {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #28a745;
+        }
+
+        .customer-info {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: left;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .info-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+        }
+
+        .btn-outline:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        .order-items {
+            margin: 2rem 0;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-right: 1rem;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-details {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .confirmation-card {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <a href="{{ url_for('index') }}">Bandozee</a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                    {% if session.user_id %}
+                    <li><a href="{{ url_for('cart') }}">Cart</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout ({{ session.user_name }})</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="confirmation-container">
+            <div class="confirmation-card">
+                <div class="success-icon">✅</div>
+                <h1 class="confirmation-title">Order Confirmed!</h1>
+                <p class="confirmation-message">
+                    Thank you for your order! Your order has been successfully placed and is being processed.
+                </p>
+                
+                <div class="order-details">
+                    <h3>Order Details</h3>
+                    <div class="detail-row">
+                        <span>Order Number:</span>
+                        <span><strong>#{{ order_id }}</strong></span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Order Date:</span>
+                        <span>{{ order_date }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Total Amount:</span>
+                        <span>R {{ "%.2f"|format(total_amount) }}</span>
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="order-items">
+                    <h3>Order Items</h3>
+                    {% for item in order_items %}
+                    <div class="order-item">
+                        <div class="item-image">
+                            <img src="{{ item.image_url or '/static/images/placeholder.jpg' }}" alt="{{ item.name }}">
+                        </div>
+                        <div class="item-details">
+                            <div class="item-name">{{ item.name }}</div>
+                            <div>Quantity: {{ item.quantity }}</div>
+                            <div>Price: R {{ "%.2f"|format(item.price) }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="customer-info">
+                    <h3>Customer Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Name:</span>
+                            <span>{{ customer_name }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span>{{ customer_email }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Phone:</span>
+                            <span>{{ customer_phone }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Delivery Address:</span>
+                            <span>{{ shipping_address }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Updated Action Buttons - Removed "My Orders" -->
+                <div class="action-buttons">
+                    <a href="{{ url_for('products') }}" class="btn btn-primary">Continue Shopping</a>
+                    <a href="{{ url_for('order_tracking', order_id=order_id) }}" class="btn btn-success">Track Order</a>
+                </div>
+
+                <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e9ecef;">
+                    <p style="color: #666; font-size: 0.9rem;">
+                        A confirmation email has been sent to <strong>{{ customer_email }}</strong>. 
+                        You'll receive another email when your order ships.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Bandozee Traditional Attire</h3>
+                <p>Celebrating South African heritage through authentic traditional clothing</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('about') }}">About Us</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p>123 Cultural Village, Durban</p>
+                <p>Phone: +27 (031) 123-4567</p>
+                <p>Email: info@bandozee.co.za</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Bandozee Traditional Attire. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

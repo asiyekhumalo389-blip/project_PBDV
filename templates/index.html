@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bandozee - Authentic Zulu Traditional Attire</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Zulu Color Palette */
+        :root {
+            --zulu-red: #E41B23;
+            --zulu-black: #000000;
+            --zulu-white: #FFFFFF;
+            --zulu-yellow: #F7D038;
+            --zulu-green: #006F3C;
+            --earth-brown: #8B4513;
+            --cream: #F5F5DC;
+            --light-brown: #CD853F;
+        }
+        
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--cream);
+            color: var(--zulu-black);
+            line-height: 1.6;
+            position: relative;
+        }
+        
+        /* Zulu pattern background overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, rgba(228, 27, 35, 0.03) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(228, 27, 35, 0.03) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, rgba(228, 27, 35, 0.03) 75%),
+                linear-gradient(-45deg, transparent 75%, rgba(228, 27, 35, 0.03) 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--zulu-black), var(--earth-brown));
+            color: var(--zulu-white);
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--zulu-white);
+            text-decoration: none;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 2.2rem;
+            color: var(--zulu-red);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin: 0 12px;
+        }
+        
+        nav ul li a {
+            color: var(--zulu-white);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        nav ul li a i {
+            margin-right: 6px;
+            font-size: 1.1rem;
+        }
+        
+        nav ul li a:hover {
+            background-color: rgba(228, 27, 35, 0.8);
+            transform: translateY(-2px);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--zulu-red);
+            color: var(--zulu-white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--earth-brown);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--zulu-white);
+            color: var(--zulu-white);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--zulu-white);
+            color: var(--zulu-red);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('/static/images/backpic.jpg');
+            background-size: cover;
+            background-position: center;
+            color: var(--zulu-white);
+            text-align: center;
+            padding: 100px 20px;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        /* Section Titles */
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            color: var(--earth-brown);
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, var(--zulu-red), var(--zulu-yellow));
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+        
+        /* Featured Products Section - UPDATED */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .product-card {
+            background-color: var(--zulu-white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 4px solid var(--zulu-red);
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Updated Image Styles - No Cropping */
+        .product-image-container {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            padding: 15px;
+        }
+        
+        .product-img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .product-info {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--earth-brown);
+        }
+        
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--zulu-red);
+            margin-bottom: 15px;
+        }
+        
+        .product-description {
+            color: var(--zulu-black);
+            margin-bottom: 20px;
+            flex: 1;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* About Section */
+        .about {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            background: linear-gradient(to right, var(--zulu-white), var(--cream));
+            padding: 40px;
+            border-radius: 10px;
+            margin: 50px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--zulu-green);
+        }
+        
+        .about-image {
+            max-width: 350px;
+            width: 100%;
+        }
+        .about-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: block;
+        }
+        
+        .about-content h2 {
+            color: var(--earth-brown);
+            margin-bottom: 20px;
+        }
+        
+        .about-content p {
+            margin-bottom: 15px;
+        }
+        
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: var(--zulu-white);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--zulu-yellow);
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature i {
+            font-size: 3rem;
+            color: var(--zulu-red);
+            margin-bottom: 20px;
+        }
+        
+        .feature h3 {
+            margin-bottom: 15px;
+            color: var(--earth-brown);
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(to right, var(--zulu-black), var(--earth-brown));
+            color: var(--zulu-white);
+            padding: 50px 0 20px;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            color: var(--zulu-white);
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--zulu-red);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-section a {
+            color: var(--cream);
+            transition: color 0.3s ease;
+        }
+        
+        .footer-section a:hover {
+            color: var(--zulu-red);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--zulu-red);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Admin Login Button (Floating) */
+        .admin-login-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--zulu-red);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .admin-login-btn:hover {
+            background-color: var(--earth-brown);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Responsive adjustments for better screen sharing */
+        @media (max-width: 1200px) {
+            .products {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .about {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin: 20px 0;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .auth-buttons {
+                margin-top: 20px;
+            }
+            
+            .hero {
+                padding: 60px 20px;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .products {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .product-image-container {
+                height: 200px;
+                padding: 10px;
+            }
+            
+            .product-img {
+                max-height: 180px;
+            }
+            
+            .product-actions {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .feature {
+                padding: 20px 15px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .products {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 0 10px;
+            }
+            
+            .product-image-container {
+                height: 180px;
+            }
+            
+            .product-img {
+                max-height: 160px;
+            }
+        }
+        
+        /* Equal height cards for consistent layout */
+        .product-card {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Flash Messages */
+        .flash-messages {
+            margin: 20px 0;
+        }
+        
+        .flash {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .flash.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="{{ url_for('index') }}" class="logo">
+                    <i class="fas fa-vest-patches"></i>
+                    <span>Bandozee</span>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="{{ url_for('products') }}"><i class="fas fa-tshirt"></i> Products</a></li>
+                        <li><a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i> About</a></li>
+                        <li><a href="{{ url_for('contact') }}"><i class="fas fa-envelope"></i> Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    {% if session.user_id %}
+                        <a href="{{ url_for('cart') }}" class="btn btn-outline"><i class="fas fa-shopping-cart"></i> Cart</a>
+                        <a href="{{ url_for('logout') }}" class="btn btn-primary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('register') }}" class="btn btn-outline"><i class="fas fa-user-plus"></i> Register</a>
+                        <a href="{{ url_for('login') }}" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Authentic Zulu Traditional Attire</h1>
+            <p>Experience the rich cultural heritage of South Africa with Bandozee's exquisite traditional clothing collection.</p>
+            <a href="{{ url_for('products') }}" class="btn btn-primary"><i class="fas fa-shopping-bag"></i> Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="container">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="products">
+            {% for product in featured_products %}
+            <div class="product-card">
+                <a href="{{ url_for('product_detail', product_id=product[0]) }}" style="text-decoration: none; color: inherit;">
+                    <div class="product-image-container">
+                        <img src="{{ product[8] }}" alt="{{ product[1] }}" class="product-img">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">{{ product[1] }}</h3>
+                        <div class="product-price">R {{ "%.2f"|format(product[2]) }}</div>
+                        <p class="product-description">{{ product[4][:100] }}...</p>
+                        <div class="product-actions">
+                            <span class="btn btn-outline">View Details</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ url_for('products') }}" class="btn btn-primary">View All Products</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="container">
+        <div class="about">
+            <div class="about-image">
+                <img src="{{ url_for('static', filename='images/8.jpg') }}" alt="Bandozee Store">
+            </div>
+            <div class="about-content">
+                <h2>About Bandozee</h2>
+                <p>Based in the heart of Durban, South Africa, Bandozee has been providing authentic traditional attire since 2010. We take pride in preserving and promoting African cultural heritage through our clothing.</p>
+                <p>Our products are handmade by local artisans using traditional techniques, ensuring both quality and authenticity. Each piece tells a story and represents the rich cultural tapestry of South Africa.</p>
+                <p>Visit our store in Durban or shop online to experience the beauty of African tradition.</p>
+                <a href="{{ url_for('about') }}" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="container">
+        <h2 class="section-title">Why Choose Bandozee</h2>
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-hands-helping"></i>
+                <h3>Support Local Artisans</h3>
+                <p>All our products are handmade by local South African artisans, supporting communities and preserving traditions.</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-award"></i>
+                <h3>Premium Quality</h3>
+                <p>We use only the finest materials and traditional techniques to ensure our products are of the highest quality.</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-truck"></i>
+                <h3>Nationwide Delivery</h3>
+                <p>We deliver across South Africa, bringing traditional attire to your doorstep wherever you are.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Login Button (Floating) -->
+    <a href="{{ url_for('admin_login') }}" class="admin-login-btn" title="Admin Login">
+        <i class="fas fa-lock"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Bandozee</h3>
+                    <p>Bandozee is a Durban-based traditional attire store specializing in authentic African clothing and accessories.</p>
+                    <p>We are committed to preserving cultural heritage while providing quality products.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{{ url_for('index') }}">Home</a></li>
+                        <li><a href="{{ url_for('products') }}">Products</a></li>
+                        <li><a href="{{ url_for('about') }}">About Us</a></li>
+                        <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Cultural Village, Durban, South Africa</p>
+                    <p><i class="fas fa-phone"></i> +27 (031) 123-4567</p>
+                    <p><i class="fas fa-envelope"></i> info@bandozee.co.za</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Bandozee Traditional Attire. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

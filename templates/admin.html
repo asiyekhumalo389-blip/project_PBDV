@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Bandozee</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Zulu Color Palette */
+    :root {
+        --zulu-red: #E41B23;
+        --zulu-black: #000000;
+        --zulu-white: #FFFFFF;
+        --zulu-yellow: #F7D038;
+        --zulu-green: #006F3C;
+        --earth-brown: #8B4513;
+        --cream: #F5F5DC;
+        --light-brown: #CD853F;
+    }
+    
+    /* Base Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+        background-color: var(--cream);
+        color: var(--zulu-black);
+        line-height: 1.6;
+        position: relative;
+    }
+    
+    /* Zulu pattern background overlay */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(45deg, rgba(228, 27, 35, 0.03) 25%, transparent 25%),
+            linear-gradient(-45deg, rgba(228, 27, 35, 0.03) 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, rgba(228, 27, 35, 0.03) 75%),
+            linear-gradient(-45deg, transparent 75%, rgba(228, 27, 35, 0.03) 75%);
+        background-size: 20px 20px;
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        z-index: -1;
+    }
+    
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* Header Styles */
+    header {
+        background: linear-gradient(to right, var(--zulu-black), var(--earth-brown));
+        color: var(--zulu-white);
+        padding: 15px 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    .nav-container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo a {
+        display: flex;
+        align-items: center;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--zulu-white);
+        text-decoration: none;
+    }
+    
+    .logo i {
+        margin-right: 10px;
+        font-size: 2.2rem;
+        color: var(--zulu-red);
+    }
+    
+    .nav-menu {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+    }
+    
+    .nav-menu a {
+        color: var(--zulu-white);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .nav-menu a i {
+        margin-right: 6px;
+        font-size: 1.1rem;
+    }
+    
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        background-color: rgba(228, 27, 35, 0.8);
+        transform: translateY(-2px);
+    }
+    
+    /* Button Styles */
+    .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        font-weight: 600;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .btn-primary {
+        background-color: var(--zulu-red);
+        color: var(--zulu-white);
+    }
+    
+    .btn-primary:hover {
+        background-color: var(--earth-brown);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-outline {
+        background-color: transparent;
+        border: 2px solid var(--zulu-white);
+        color: var(--zulu-white);
+    }
+    
+    .btn-outline:hover {
+        background-color: var(--zulu-white);
+        color: var(--zulu-red);
+    }
+
+    .btn-small {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+    
+    /* Admin Content Styles */
+    .admin-container {
+        min-height: 80vh;
+        padding: 40px 0;
+    }
+    
+    .admin-header {
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--zulu-red);
+    }
+    
+    .admin-title {
+        color: var(--earth-brown);
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    
+    /* Admin Stats Cards */
+    .admin-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 25px;
+        margin: 30px 0;
+    }
+    
+    .stat-card {
+        background-color: var(--zulu-white);
+        padding: 25px 20px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        border-top: 4px solid var(--zulu-red);
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-card.messages {
+        border-top-color: var(--zulu-green);
+    }
+
+    .stat-card.new-messages {
+        border-top-color: var(--zulu-yellow);
+    }
+    
+    .stat-card h3 {
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+        color: var(--earth-brown);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--zulu-red);
+    }
+
+    .stat-card.messages .stat-number {
+        color: var(--zulu-green);
+    }
+
+    .stat-card.new-messages .stat-number {
+        color: var(--zulu-yellow);
+    }
+    
+    /* Quick Actions */
+    .quick-actions {
+        display: flex;
+        gap: 15px;
+        margin: 30px 0;
+        flex-wrap: wrap;
+    }
+    
+    .action-btn {
+        background-color: var(--zulu-red);
+        color: var(--zulu-white);
+        padding: 15px 25px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .action-btn:hover {
+        background-color: var(--earth-brown);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .action-btn.products {
+        background-color: var(--zulu-green);
+    }
+    
+    .action-btn.products:hover {
+        background-color: var(--earth-brown);
+    }
+    
+    .action-btn.customers {
+        background-color: var(--zulu-yellow);
+        color: var(--zulu-black);
+    }
+    
+    .action-btn.customers:hover {
+        background-color: var(--earth-brown);
+        color: var(--zulu-white);
+    }
+    
+    .action-btn.rentals {
+        background-color: var(--light-brown);
+    }
+    
+    .action-btn.rentals:hover {
+        background-color: var(--earth-brown);
+    }
+
+    .action-btn.messages {
+        background-color: #3498db;
+    }
+    
+    .action-btn.messages:hover {
+        background-color: var(--earth-brown);
+    }
+    
+    /* Admin Sections */
+    .admin-sections {
+        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+    
+    .admin-section {
+        background: var(--zulu-white);
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid var(--zulu-green);
+    }
+
+    .admin-section.messages {
+        border-left-color: #3498db;
+    }
+    
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .section-title {
+        color: var(--earth-brown);
+        font-size: 1.8rem;
+    }
+
+    .admin-section.messages .section-title {
+        color: #3498db;
+    }
+    
+    /* Table Styles */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background-color: var(--zulu-white);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .data-table th, .data-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .data-table th {
+        background-color: var(--zulu-black);
+        color: var(--zulu-white);
+        font-weight: 600;
+    }
+    
+    .data-table tr:hover {
+        background-color: rgba(228, 27, 35, 0.05);
+    }
+    
+    /* Status Badges with South African Colors */
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    
+    .status-pending {
+        background: var(--zulu-yellow);
+        color: var(--zulu-black);
+    }
+    
+    .status-active {
+        background: var(--zulu-green);
+        color: var(--zulu-white);
+    }
+    
+    .status-completed {
+        background: var(--zulu-red);
+        color: var(--zulu-white);
+    }
+    
+    .status-cancelled {
+        background: var(--zulu-black);
+        color: var(--zulu-white);
+    }
+    
+    .status-unknown {
+        background: var(--zulu-white);
+        color: var(--zulu-black);
+        border: 1px solid #ccc;
+    }
+
+    /* Message Status Badges */
+    .status-new {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .status-read {
+        background: #27ae60;
+        color: white;
+    }
+
+    .status-replied {
+        background: #3498db;
+        color: white;
+    }
+    
+    /* Flash Messages */
+    .flash-messages {
+        margin: 20px 0;
+    }
+    
+    .flash {
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        text-align: center;
+        font-weight: 500;
+    }
+    
+    .flash.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .flash.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .flash.info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+    
+    /* Footer */
+    footer {
+        background: linear-gradient(to right, var(--zulu-black), var(--earth-brown));
+        color: var(--zulu-white);
+        padding: 50px 0 20px;
+        margin-top: 60px;
+    }
+    
+    .footer-content {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .footer-section h3 {
+        color: var(--zulu-white);
+        margin-bottom: 20px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    
+    .footer-section h3::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background-color: var(--zulu-red);
+    }
+    
+    .footer-bottom {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.2);
+        font-size: 0.9rem;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 900px) {
+        .admin-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .quick-actions {
+            flex-direction: column;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .nav-container {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .nav-menu {
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .admin-stats {
+            grid-template-columns: 1fr;
+        }
+        
+        .section-header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+        
+        .data-table {
+            display: block;
+            overflow-x: auto;
+        }
+    }
+  </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="{{ url_for('index') }}">
+                    <i class="fas fa-vest-patches"></i>
+                    <span>Bandozee Admin</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('admin_dashboard') }}" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('admin_messages') }}"><i class="fas fa-envelope"></i> Messages</a></li>
+                <li><a href="{{ url_for('admin_products') }}"><i class="fas fa-tshirt"></i> Products</a></li>
+                <li><a href="{{ url_for('admin_orders') }}"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="{{ url_for('admin_customers') }}"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="{{ url_for('admin_rentals') }}"><i class="fas fa-calendar-alt"></i> Rentals</a></li>
+                <li><a href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="container admin-container">
+        <!-- Flash Messages -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="admin-header">
+            <h1 class="admin-title">Admin Dashboard</h1>
+            <p>Welcome to your Bandozee administration panel</p>
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <div class="quick-actions">
+            <a href="{{ url_for('admin_add_product') }}" class="action-btn">
+                <i class="fas fa-plus"></i> Add New Product
+            </a>
+            <a href="{{ url_for('admin_products') }}" class="action-btn products">
+                <i class="fas fa-tshirt"></i> Manage Products
+            </a>
+            <a href="{{ url_for('admin_orders') }}" class="action-btn">
+                <i class="fas fa-shopping-cart"></i> Manage Orders
+            </a>
+            <a href="{{ url_for('admin_customers') }}" class="action-btn customers">
+                <i class="fas fa-users"></i> Manage Customers
+            </a>
+            <a href="{{ url_for('admin_rentals') }}" class="action-btn rentals">
+                <i class="fas fa-calendar-alt"></i> Manage Rentals
+            </a>
+            <a href="{{ url_for('admin_messages') }}" class="action-btn messages">
+                <i class="fas fa-envelope"></i> Manage Messages
+            </a>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="admin-stats">
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <p class="stat-number">{{ user_count }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Orders</h3>
+                <p class="stat-number">{{ total_orders }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Products</h3>
+                <p class="stat-number">{{ product_count }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Pending Orders</h3>
+                <p class="stat-number">{{ pending_orders }}</p>
+            </div>
+            <div class="stat-card messages">
+                <h3>Total Messages</h3>
+                <p class="stat-number">{{ total_messages }}</p>
+            </div>
+            <div class="stat-card new-messages">
+                <h3>New Messages</h3>
+                <p class="stat-number">{{ new_messages }}</p>
+            </div>
+        </div>
+
+        <!-- Recent Data Sections -->
+        <div class="admin-sections">
+            <!-- Recent Orders with Status Controls -->
+            <section class="admin-section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Orders</h2>
+                    <a href="{{ url_for('admin_orders') }}" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View All Orders
+                    </a>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                        <tr>
+                            <td>#{{ order[0] }}</td>
+                            <td>
+                                {% for user in recent_users %}
+                                    {% if user[0] == order[1] %}
+                                        {{ user[1] }}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>R{{ "%.2f"|format(order[2]) if order[2] else '0.00' }}</td>
+                            <td>
+                                <span class="status-badge 
+                                    {% if order[3] == 'pending' %}status-pending
+                                    {% elif order[3] == 'processing' %}status-processing
+                                    {% elif order[3] == 'shipped' %}status-shipped
+                                    {% elif order[3] == 'delivered' %}status-delivered
+                                    {% elif order[3] == 'completed' %}status-completed
+                                    {% elif order[3] == 'cancelled' %}status-cancelled
+                                    {% else %}status-unknown{% endif %}">
+                                    {{ order[3]|title if order[3] else 'Unknown' }}
+                                </span>
+                            </td>
+                            <td>{{ order[4] if order[4] else 'N/A' }}</td>
+                            <td>
+                                <div class="status-controls">
+                                    <form method="POST" action="{{ url_for('admin_update_order_status') }}" style="display: inline;">
+                                        <input type="hidden" name="order_id" value="{{ order[0] }}">
+                                        <input type="hidden" name="status" value="processing">
+                                        <button type="submit" class="btn btn-info status-btn" 
+                                                {% if order[3] in ['processing', 'shipped', 'delivered', 'completed', 'cancelled'] %}disabled{% endif %}>
+                                            Process
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('admin_update_order_status') }}" style="display: inline;">
+                                        <input type="hidden" name="order_id" value="{{ order[0] }}">
+                                        <input type="hidden" name="status" value="shipped">
+                                        <button type="submit" class="btn btn-warning status-btn" 
+                                                {% if order[3] in ['shipped', 'delivered', 'completed', 'cancelled'] %}disabled{% endif %}>
+                                            Ship
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('admin_update_order_status') }}" style="display: inline;">
+                                        <input type="hidden" name="order_id" value="{{ order[0] }}">
+                                        <input type="hidden" name="status" value="delivered">
+                                        <button type="submit" class="btn btn-success status-btn" 
+                                                {% if order[3] in ['delivered', 'completed', 'cancelled'] %}disabled{% endif %}>
+                                            Deliver
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #6c757d;">No recent orders</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Recent Messages -->
+            <section class="admin-section messages">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Messages</h2>
+                    <a href="{{ url_for('admin_messages') }}" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View All
+                    </a>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for message in recent_messages %}
+                        <tr>
+                            <td>{{ message[6].split(' ')[0] if message[6] else 'N/A' }}</td>
+                            <td>{{ message[1] }}</td>
+                            <td>{{ message[2] }}</td>
+                            <td>{{ message[3][:30] }}{% if message[3]|length > 30 %}...{% endif %}</td>
+                            <td>
+                                <span class="status-badge 
+                                    {% if message[5] == 'new' %}status-pending
+                                    {% elif message[5] == 'read' %}status-processing
+                                    {% elif message[5] == 'replied' %}status-completed
+                                    {% else %}status-unknown{% endif %}">
+                                    {{ message[5]|title if message[5] else 'Unknown' }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #6c757d;">No recent messages</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Recent Users -->
+            <section class="admin-section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Users</h2>
+                    <a href="{{ url_for('admin_customers') }}" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View All
+                    </a>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Join Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in recent_users %}
+                        <tr>
+                            <td>{{ user[0] }}</td>
+                            <td>{{ user[1] }}</td>
+                            <td>{{ user[2] }}</td>
+                            <td>{{ user[5] if user[5] else 'N/A' }}</td>
+                            <td>{{ user[6] if user[6] else 'N/A' }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #6c757d;">No users found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Recent Rentals -->
+            <section class="admin-section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Rentals</h2>
+                    <a href="{{ url_for('admin_rentals') }}" class="btn btn-primary">
+                        <i class="fas fa-eye"></i> View All
+                    </a>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Rental ID</th>
+                            <th>Customer</th>
+                            <th>Product</th>
+                            <th>Duration</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rental in recent_rentals %}
+                        <tr>
+                            <td>#{{ rental[0] }}</td>
+                            <td>{{ rental[7] if rental[7] else 'Unknown' }}</td>
+                            <td>{{ rental[9] if rental[9] else 'Unknown' }}</td>
+                            <td>{{ rental[3] }} days</td>
+                            <td>R{{ "%.2f"|format(rental[4]) if rental[4] else '0.00' }}</td>
+                            <td>
+                                <span class="status-badge 
+                                    {% if rental[5] == 'pending' %}status-pending
+                                    {% elif rental[5] == 'active' %}status-active
+                                    {% elif rental[5] == 'completed' %}status-completed
+                                    {% elif rental[5] == 'cancelled' %}status-cancelled
+                                    {% else %}status-unknown{% endif %}">
+                                    {{ rental[5]|title if rental[5] else 'Unknown' }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #6c757d;">No recent rentals</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Bandozee Admin Panel</h3>
+                <p>Manage your traditional attire store with ease and preserve cultural heritage through quality products.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('admin_orders') }}">Orders</a></li>
+                    <li><a href="{{ url_for('admin_products') }}">Products</a></li>
+                    <li><a href="{{ url_for('admin_customers') }}">Customers</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Cultural Village, Durban, South Africa</p>
+                <p><i class="fas fa-phone"></i> +27 (031) 123-4567</p>
+                <p><i class="fas fa-envelope"></i> admin@bandozee.co.za</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Bandozee Traditional Attire. Admin Access Only.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Order status update confirmation
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusButtons = document.querySelectorAll('.status-btn');
+            
+            statusButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const form = this.closest('form');
+                    const status = this.textContent.trim();
+                    const orderId = form.querySelector('input[name="order_id"]').value;
+                    
+                    if (!confirm(`Are you sure you want to mark order #${orderId} as ${status}?`)) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

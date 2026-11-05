@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product[1] }} - Bandozee Traditional Attire</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* --- Product Detail Page --- */
+        .product-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 3rem 1rem;
+        }
+
+        .product-gallery .main-image img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .product-info h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #222;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #007bff;
+            margin-bottom: 0.5rem;
+        }
+
+        .rental-price {
+            font-size: 1.2rem;
+            color: #28a745;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-stock {
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: #444;
+        }
+
+        .product-description, .product-details {
+            margin-top: 1.5rem;
+        }
+
+        .product-description h3, 
+        .product-details h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            color: #333;
+        }
+
+        .product-details ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .product-details li {
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        .product-actions {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .out-of-stock {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #ffe5e5;
+            border: 1px solid #ffcccc;
+            border-radius: 8px;
+            color: #b30000;
+            text-align: center;
+        }
+
+        /* Related Products */
+        .related-products {
+            margin-top: 4rem;
+            padding: 2rem 1rem;
+            background: #f9f9f9;
+            border-radius: 12px;
+        }
+
+        .related-products h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #222;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            padding: 1rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+
+        .product-card img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .product-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .product-card .price {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+
+        /* Buttons (reuse style) */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #f1f1f1;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e2e2;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .product-detail {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <a href="{{ url_for('index') }}">Bandozee</a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                    {% if session.user_id %}
+                    <li><a href="{{ url_for('cart') }}">Cart</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout ({{ session.user_name }})</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="product-detail">
+            <div class="product-gallery">
+                <div class="main-image">
+                    <img src="{{ product[8] }}" alt="{{ product[1] }}">
+                </div>
+            </div>
+            
+            <div class="product-info">
+                <h1>{{ product[1] }}</h1>
+                <p class="product-price">R{{ "%.2f"|format(product[2]) }}</p>
+                {% if product[10] == 1 %}
+                <p class="rental-price">Rent: R{{ "%.2f"|format(product[3]) }}/day</p>
+                {% endif %}
+                <p class="product-stock">{% if product[9] > 0 %}{{ product[9] }} in stock{% else %}Out of stock{% endif %}</p>
+                
+                <div class="product-description">
+                    <h3>Description</h3>
+                    <p>{{ product[4] }}</p>
+                </div>
+                
+                <div class="product-details">
+                    <h3>Details</h3>
+                    <ul>
+                        <li><strong>Category:</strong> {{ product[5] }}</li>
+                        <li><strong>Subcategory:</strong> {{ product[6] }}</li>
+                        <li><strong>Gender:</strong> {{ product[7] }}</li>
+                        <li><strong>Material:</strong> Traditional fabric with authentic patterns</li>
+                        <li><strong>Care:</strong> Hand wash recommended</li>
+                        <li><strong>Origin:</strong> Handcrafted in South Africa</li>
+                    </ul>
+                </div>
+                
+                {% if product[9] > 0 %}
+                <div class="product-actions">
+                    <a href="{{ url_for('add_to_cart', product_id=product[0]) }}" class="btn btn-primary">Add to Cart</a>
+                    {% if product[10] == 1 %}
+                    <a href="{{ url_for('rentals') }}" class="btn btn-secondary">Rent This Item</a>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="out-of-stock">
+                    <p>This item is currently out of stock. Please check back later.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <section class="related-products">
+            <h2>You Might Also Like</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <img src="{{ url_for('static', filename='images/related1.jpg') }}" alt="Related Product">
+                    <h3>Traditional Beaded Skirt</h3>
+                    <p class="price">R650.00</p>
+                    <a href="#" class="btn btn-secondary">View Details</a>
+                </div>
+                
+                <div class="product-card">
+                    <img src="{{ url_for('static', filename='images/related2.jpg') }}" alt="Related Product">
+                    <h3>Colorful Headwrap</h3>
+                    <p class="price">R220.00</p>
+                    <a href="#" class="btn btn-secondary">View Details</a>
+                </div>
+                
+                <div class="product-card">
+                    <img src="{{ url_for('static', filename='images/related3.jpg') }}" alt="Related Product">
+                    <h3>Beaded Bracelet Set</h3>
+                    <p class="price">R180.00</p>
+                    <a href="#" class="btn btn-secondary">View Details</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Bandozee Traditional Attire</h3>
+                <p>Celebrating South African heritage through authentic traditional clothing</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('about') }}">About Us</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p>123 Cultural Village, Durban</p>
+                <p>Phone: +27 (031) 123-4567</p>
+                <p>Email: info@bandozee.co.za</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Bandozee Traditional Attire. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Bandozee Traditional Attire</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Navbar */
+        .navbar {
+            padding: 10px 20px;
+            background: #333;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo a {
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu li {
+            display: inline;
+        }
+
+        .nav-menu li a {
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 12px;
+            transition: background 0.3s ease;
+            border-radius: 5px;
+        }
+
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-menu li.logout a {
+            background: red;
+            color: white;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 5px;
+        }
+
+        .nav-menu li.logout a:hover {
+            background: darkred;
+        }
+
+        /* Products Header */
+        .products-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .products-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .products-header p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Filter Options */
+        .products-filter {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+
+        .products-filter h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .filter-options {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            color: #333;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        /* Cart Actions */
+        .cart-actions {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .cart-actions h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        /* Product Image Display Styles - UPDATED */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+            padding: 0 20px;
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        /* Updated Image Styles - No Cropping */
+        .product-image-container {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            padding: 15px;
+        }
+
+        .product-card img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .product-info {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        /* Ensure consistent card heights */
+        .product-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        .option-group {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .price-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .option-icon {
+            font-size: 1.2rem;
+        }
+
+        .option-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .price-amount {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 10px 0;
+            justify-content: center;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #ddd;
+            background: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .quantity-btn:disabled {
+            background: #f8f9fa;
+            color: #adb5bd;
+            cursor: not-allowed;
+        }
+
+        .quantity-input {
+            width: 60px;
+            height: 35px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .quantity-input:focus {
+            outline: none;
+            border-color: #28a745;
+        }
+
+        /* Rental Days Controls */
+        .rental-days-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 10px 0;
+            justify-content: center;
+        }
+
+        .rental-days-input {
+            width: 70px;
+            height: 35px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .rental-days-input:focus {
+            outline: none;
+            border-color: #ffc107;
+        }
+
+        .days-label {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .btn-buy, .btn-rent {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 5px;
+        }
+
+        .btn-buy {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-buy:hover {
+            background: #218838;
+        }
+
+        .btn-rent {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-rent:hover {
+            background: #e0a800;
+        }
+
+        .rental-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .rental-days-select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .rental-form {
+            margin-top: 10px;
+        }
+
+        /* No products message */
+        .no-products {
+            text-align: center;
+            padding: 60px 20px;
+            grid-column: 1 / -1;
+        }
+
+        .no-products h2 {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        /* Popup Notification */
+        .popup-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-notification.show {
+            transform: translateX(0);
+        }
+
+        .popup-notification.error {
+            background: #e74c3c;
+        }
+
+        .popup-notification.warning {
+            background: #f39c12;
+        }
+
+        .popup-notification i {
+            font-size: 1.2rem;
+        }
+
+        .popup-notification .popup-message {
+            font-weight: 500;
+        }
+
+        .popup-notification .popup-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: #222;
+            color: #ddd;
+            padding: 40px 20px 20px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            max-width: 1100px;
+            margin: auto;
+            gap: 30px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-section h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .footer-section p, 
+        .footer-section ul, 
+        .footer-section li {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid #444;
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        /* Responsive adjustments for better screen sharing */
+        @media (max-width: 1200px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .product-image-container {
+                height: 200px;
+                padding: 10px;
+            }
+            
+            .product-card img {
+                max-height: 180px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .rental-controls {
+                flex-direction: column;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .popup-notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                transform: translateY(-100px);
+            }
+
+            .popup-notification.show {
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 0 10px;
+            }
+            
+            .product-image-container {
+                height: 180px;
+            }
+            
+            .product-card img {
+                max-height: 160px;
+            }
+        }
+
+        /* Equal height cards for consistent layout */
+        .product-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .option-group:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Popup Notification -->
+    <div id="popupNotification" class="popup-notification">
+        <i class="fas fa-check-circle"></i>
+        <span class="popup-message"></span>
+        <button class="popup-close" onclick="hidePopup()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <a href="{{ url_for('index') }}">Bandozee</a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}" class="active">Products</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                    {% if session.user_id %}
+                    <li><a href="{{ url_for('cart') }}">Cart</a></li>
+                    <li><a href="{{ url_for('order_tracking') }}">My Orders</a></li>
+                    <li class="logout"><a href="{{ url_for('logout') }}">Logout ({{ session.user_name }})</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="products-header">
+            <h1>Our Traditional Attire Collection</h1>
+            <p>Discover our handcrafted traditional clothing and accessories, each piece telling a story of South African heritage</p>
+        </div>
+        
+        <div class="products-filter">
+            <h2>Filter by Category</h2>
+            <div class="filter-options">
+                <a href="{{ url_for('products') }}" class="filter-btn {% if not category %}active{% endif %}">All Products</a>
+                <a href="{{ url_for('products', category='Head Wear') }}" class="filter-btn {% if category == 'Head Wear' %}active{% endif %}">Head Wear</a>
+                <a href="{{ url_for('products', category='Neck Wear') }}" class="filter-btn {% if category == 'Neck Wear' %}active{% endif %}">Neck Wear</a>
+                <a href="{{ url_for('products', category='Top Wear') }}" class="filter-btn {% if category == 'Top Wear' %}active{% endif %}">Top Wear</a>
+                <a href="{{ url_for('products', category='Bottom Wear') }}" class="filter-btn {% if category == 'Bottom Wear' %}active{% endif %}">Bottom Wear</a>
+                <a href="{{ url_for('products', category='Shoes') }}" class="filter-btn {% if category == 'Shoes' %}active{% endif %}">Shoes</a>
+                <a href="{{ url_for('products', category='Extra Wear') }}" class="filter-btn {% if category == 'Extra Wear' %}active{% endif %}">Extra Wear</a>
+            </div>
+        </div>
+
+        <!-- Proceed to Cart Section -->
+        <div class="cart-actions">
+            <h3>Ready to complete your order?</h3>
+            <div class="action-buttons">
+                <a href="{{ url_for('cart') }}" class="btn btn-success">
+                    <i class="fas fa-shopping-cart"></i> Proceed to Cart
+                </a>
+                <a href="{{ url_for('rentals') }}" class="btn btn-secondary">
+                    <i class="fas fa-calendar-alt"></i> View Rental Options
+                </a>
+                <a href="{{ url_for('order_tracking') }}" class="btn btn-info">
+                    <i class="fas fa-truck"></i> Track Your Order
+                </a>
+            </div>
+        </div>
+
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="{{ product[8] if product[8] else url_for('static', filename='images/placeholder.jpg') }}" 
+                         alt="{{ product[1] }}" 
+                         loading="lazy">
+                </div>
+                
+                <div class="product-info">
+                    <h3>{{ product[1] }}</h3>
+                    <p class="product-description">{{ product[4][:100] }}{% if product[4]|length > 100 %}...{% endif %}</p>
+                    
+                    <!-- Category Badge -->
+                    <div style="margin-bottom: 10px;">
+                        <span style="background: #007bff; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem;">
+                            {{ product[5] }} {% if product[6] %}- {{ product[6] }}{% endif %}
+                        </span>
+                        <span style="background: #28a745; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; margin-left: 5px;">
+                            {{ product[7] }}
+                        </span>
+                    </div>
+                    
+                    <!-- Purchase Option -->
+                    <div class="option-group purchase-option">
+                        <div class="price-display">
+                            <span class="option-icon">🛒</span>
+                            <span class="option-label">Buy Now:</span>
+                            <span class="price-amount">R{{ "%.2f"|format(product[2]) }}</span>
+                        </div>
+                        
+                        <!-- Quantity Controls for Purchase -->
+                        <div class="quantity-controls">
+                            <button class="quantity-btn minus-btn" onclick="updateQuantity(this, -1)">-</button>
+                            <input type="number" 
+                                   class="quantity-input" 
+                                   value="1" 
+                                   min="1" 
+                                   max="99"
+                                   onchange="validateQuantity(this)"
+                                   onblur="validateQuantity(this)">
+                            <button class="quantity-btn plus-btn" onclick="updateQuantity(this, 1)">+</button>
+                        </div>
+                        
+                        <button class="btn-buy" onclick="addToCartPurchase({{ product[0] }}, this)">
+                            Add to Cart - Buy
+                        </button>
+                    </div>
+                    
+                    <!-- Rental Option (only if available for rent) -->
+                    {% if product[10] == 1 and product[3] > 0 %}
+                    <div class="option-group rental-option">
+                        <div class="price-display">
+                            <span class="option-icon">📅</span>
+                            <span class="option-label">Rent:</span>
+                            <span class="price-amount">R{{ "%.2f"|format(product[3]) }}/day</span>
+                        </div>
+                        
+                        <!-- Rental Days Controls -->
+                        <div class="rental-days-controls">
+                            <button class="quantity-btn minus-btn" onclick="updateRentalDays(this, -1)">-</button>
+                            <input type="number" 
+                                   class="rental-days-input" 
+                                   value="3" 
+                                   min="1" 
+                                   max="30"
+                                   onchange="validateRentalDays(this)"
+                                   onblur="validateRentalDays(this)">
+                            <button class="quantity-btn plus-btn" onclick="updateRentalDays(this, 1)">+</button>
+                            <span class="days-label">days</span>
+                        </div>
+                        
+                        <button class="btn-rent" onclick="addToCartRental({{ product[0] }}, this)">
+                            Add to Cart - Rent
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="no-products">
+                <h2>No products found</h2>
+                <p>Please try another category or check back later for new arrivals.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Additional Proceed to Cart Section at Bottom -->
+        <div class="cart-actions">
+            <h3>Found what you're looking for?</h3>
+            <div class="action-buttons">
+                <a href="{{ url_for('cart') }}" class="btn btn-success">
+                    <i class="fas fa-shopping-cart"></i> Proceed to Checkout
+                </a>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                    <i class="fas fa-home"></i> Continue Shopping
+                </a>
+                <a href="{{ url_for('order_tracking') }}" class="btn btn-info">
+                    <i class="fas fa-truck"></i> Track Your Order
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Bandozee Traditional Attire</h3>
+                <p>Celebrating South African heritage through authentic traditional clothing.  
+                Every piece tells a story of pride and culture.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('about') }}">About Us</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                    <li><a href="{{ url_for('order_tracking') }}">Order Tracking</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p>📍 123 Cultural Village, Durban</p>
+                <p>📞 Call or WhatsApp: 0649486320</p>
+                <p>📧 info@bandozee.co.za</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Bandozee Traditional Attire. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Popup Notification Functions
+        function showPopup(message, type = 'success') {
+            const popup = document.getElementById('popupNotification');
+            const messageEl = popup.querySelector('.popup-message');
+            const icon = popup.querySelector('i');
+            
+            // Set message and type
+            messageEl.textContent = message;
+            popup.className = `popup-notification ${type}`;
+            
+            // Change icon based on type
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle';
+            } else if (type === 'error') {
+                icon.className = 'fas fa-exclamation-circle';
+            } else if (type === 'warning') {
+                icon.className = 'fas fa-exclamation-triangle';
+            }
+            
+            // Show popup
+            popup.classList.add('show');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                hidePopup();
+            }, 5000);
+        }
+
+        function hidePopup() {
+            const popup = document.getElementById('popupNotification');
+            popup.classList.remove('show');
+        }
+
+        // Quantity control functions for purchase items
+        function updateQuantity(button, change) {
+            const controls = button.closest('.quantity-controls');
+            const input = controls.querySelector('.quantity-input');
+            let newQuantity = parseInt(input.value) + change;
+            
+            if (newQuantity < 1) {
+                newQuantity = 1;
+            }
+            
+            if (newQuantity > 99) {
+                newQuantity = 99;
+            }
+            
+            input.value = newQuantity;
+            
+            // Update minus button state
+            const minusBtn = controls.querySelector('.minus-btn');
+            minusBtn.disabled = newQuantity <= 1;
+        }
+
+        function validateQuantity(input) {
+            let quantity = parseInt(input.value);
+            
+            if (isNaN(quantity) || quantity < 1) {
+                quantity = 1;
+                input.value = quantity;
+            }
+            
+            if (quantity > 99) {
+                quantity = 99;
+                input.value = quantity;
+            }
+            
+            // Update minus button state
+            const controls = input.closest('.quantity-controls');
+            const minusBtn = controls.querySelector('.minus-btn');
+            minusBtn.disabled = quantity <= 1;
+        }
+
+        // Rental days control functions
+        function updateRentalDays(button, change) {
+            const controls = button.closest('.rental-days-controls');
+            const input = controls.querySelector('.rental-days-input');
+            let newDays = parseInt(input.value) + change;
+            
+            if (newDays < 1) {
+                newDays = 1;
+            }
+            
+            if (newDays > 30) {
+                newDays = 30;
+            }
+            
+            input.value = newDays;
+            
+            // Update minus button state
+            const minusBtn = controls.querySelector('.minus-btn');
+            minusBtn.disabled = newDays <= 1;
+        }
+
+        function validateRentalDays(input) {
+            let days = parseInt(input.value);
+            
+            if (isNaN(days) || days < 1) {
+                days = 1;
+                input.value = days;
+            }
+            
+            if (days > 30) {
+                days = 30;
+                input.value = days;
+            }
+            
+            // Update minus button state
+            const controls = input.closest('.rental-days-controls');
+            const minusBtn = controls.querySelector('.minus-btn');
+            minusBtn.disabled = days <= 1;
+        }
+
+        // Add to cart functions with popup notifications
+        function addToCartPurchase(productId, button) {
+            const quantity = button.closest('.purchase-option').querySelector('.quantity-input').value;
+            
+            // Show loading state
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            button.disabled = true;
+            
+            // Send request to add to cart
+            fetch(`/add-to-cart-purchase/${productId}?quantity=${quantity}`)
+                .then(response => {
+                    if (response.ok) {
+                        showPopup(`✅ ${quantity} item(s) added to cart for purchase!`, 'success');
+                        // Reset button after success
+                        setTimeout(() => {
+                            button.innerHTML = 'Add to Cart - Buy';
+                            button.disabled = false;
+                        }, 2000);
+                    } else {
+                        throw new Error('Failed to add to cart');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showPopup('❌ Failed to add item to cart. Please try again.', 'error');
+                    // Reset button after error
+                    button.innerHTML = 'Add to Cart - Buy';
+                    button.disabled = false;
+                });
+        }
+
+        function addToCartRental(productId, button) {
+            const rentalDays = button.closest('.rental-option').querySelector('.rental-days-input').value;
+            
+            // Show loading state
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            button.disabled = true;
+            
+            // Send request to add to cart
+            fetch(`/add-to-cart-rental/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `rental_days=${rentalDays}`
+            })
+            .then(response => {
+                if (response.ok) {
+                    showPopup(`📅 Product added to cart for ${rentalDays} day(s) rental!`, 'success');
+                    // Reset button after success
+                    setTimeout(() => {
+                        button.innerHTML = 'Add to Cart - Rent';
+                        button.disabled = false;
+                    }, 2000);
+                } else {
+                    throw new Error('Failed to add to cart');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showPopup('❌ Failed to add rental item to cart. Please try again.', 'error');
+                // Reset button after error
+                button.innerHTML = 'Add to Cart - Rent';
+                button.disabled = false;
+            });
+        }
+
+        // Initialize minus buttons state on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize purchase quantity buttons
+            const purchaseMinusButtons = document.querySelectorAll('.purchase-option .minus-btn');
+            purchaseMinusButtons.forEach(button => {
+                const input = button.parentElement.querySelector('.quantity-input');
+                if (parseInt(input.value) <= 1) {
+                    button.disabled = true;
+                }
+            });
+
+            // Initialize rental days buttons
+            const rentalMinusButtons = document.querySelectorAll('.rental-option .minus-btn');
+            rentalMinusButtons.forEach(button => {
+                const input = button.parentElement.querySelector('.rental-days-input');
+                if (parseInt(input.value) <= 1) {
+                    button.disabled = true;
+                }
+            });
+
+            // Show welcome message
+            showPopup('Welcome to Bandozee Products! 🛍️', 'success');
+        });
+    </script>
+</body>
+</html>

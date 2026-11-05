@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - Bandozee Traditional Attire</title>
+  <style>
+    /* === Global Styles === */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background: #fafafa;
+      color: #333;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    h1, h2, h3 {
+      margin-bottom: 10px;
+      color: #222;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px 0;
+    }
+
+    /* === Navbar === */
+    .navbar {
+      background: #222;
+      color: #fff;
+      padding: 15px 0;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 90%;
+      margin: auto;
+    }
+    .logo a {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+    }
+    .nav-menu {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    .nav-menu li a {
+      color: #fff;
+      transition: color 0.3s;
+    }
+    .nav-menu li a:hover,
+    .nav-menu li a.active {
+      color: #f39c12;
+    }
+
+    /* === Contact Content === */
+    .contact-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 30px;
+    }
+
+    .contact-info {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .contact-details {
+      margin-top: 20px;
+    }
+    .contact-item {
+      margin-bottom: 20px;
+    }
+
+    /* === Form === */
+    .contact-form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    input:focus, textarea:focus {
+      border-color: #f39c12;
+      outline: none;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn-primary {
+      background: #f39c12;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #d35400;
+    }
+
+    /* === Map Section === */
+    .map-section {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .map-placeholder {
+      background: #eee;
+      padding: 40px;
+      border-radius: 10px;
+      font-style: italic;
+      color: #555;
+    }
+
+    /* === Footer === */
+    footer {
+      background: #222;
+      color: #fff;
+      margin-top: 40px;
+    }
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 20px 10%;
+    }
+    .footer-section h3 {
+      margin-bottom: 10px;
+      color: #f39c12;
+    }
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    .footer-section ul li {
+      margin-bottom: 8px;
+    }
+    .footer-section ul li a {
+      color: #ddd;
+    }
+    .footer-bottom {
+      background: #111;
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9rem;
+    }
+
+    /* === Responsive === */
+    @media (max-width: 768px) {
+      .contact-content {
+        grid-template-columns: 1fr;
+      }
+      .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="logo">
+          <a href="{{ url_for('index') }}">Bandozee</a>
+        </div>
+        <ul class="nav-menu">
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="{{ url_for('products') }}">Products</a></li>
+          <li><a href="{{ url_for('about') }}">About</a></li>
+          <li><a href="{{ url_for('contact') }}" class="active">Contact</a></li>
+          {% if session.user_id %}
+          <li><a href="{{ url_for('cart') }}">Cart</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout ({{ session.user_name }})</a></li>
+          {% else %}
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1>Contact Us</h1>
+
+    <div class="contact-content">
+      <div class="contact-info">
+        <h2>Get in Touch</h2>
+        <p>We'd love to hear from you! Whether you have questions about our products, need assistance with an order, or want to learn more about our traditional attire, our team is here to help.</p>
+        <div class="contact-details">
+          <div class="contact-item">
+            <h3>Address</h3>
+            <p>123 Cultural Village<br>Durban, 4001<br>South Africa</p>
+          </div>
+          <div class="contact-item">
+            <h3>Phone</h3>
+            <p>+27 (031) 123-4567</p>
+          </div>
+          <div class="contact-item">
+            <h3>Email</h3>
+            <p>info@bandozee.co.za</p>
+          </div>
+          <div class="contact-item">
+            <h3>Business Hours</h3>
+            <p>Mon - Fri: 9:00 AM - 5:00 PM<br>Sat: 9:00 AM - 2:00 PM<br>Sun: Closed</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <h2>Send us a Message</h2>
+        <form action="{{ url_for('contact') }}" method="POST">
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Your Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject" required>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Send Message</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="map-section">
+      <h2>Find Us</h2>
+      <div class="map-placeholder">
+        <p>Map would be displayed here</p>
+        <p>Durban, South Africa</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Bandozee Traditional Attire</h3>
+        <p>Celebrating South African heritage through authentic traditional clothing</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="{{ url_for('products') }}">Products</a></li>
+          <li><a href="{{ url_for('about') }}">About Us</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Contact Info</h3>
+        <p>123 Cultural Village, Durban</p>
+        <p>Phone: +27 (031) 123-4567</p>
+        <p>Email: info@bandozee.co.za</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2023 Bandozee Traditional Attire. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

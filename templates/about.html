@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Bandozee Traditional Attire</title>
+
+    <style>
+        /* South African Cultural Theme */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Ubuntu', sans-serif;
+            background-color: #fdfaf6;
+            color: #333;
+        }
+
+        .navbar {
+            background-color: #863e03;
+            padding: 10px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 20px;
+        }
+
+        .logo a {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-menu li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            color: #ffb400;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        .about-section {
+            background-color: #fff;
+            border-left: 10px solid #d71920;
+            border-right: 10px solid #0c1c8c;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .about-text {
+            flex: 1 1 60%;
+        }
+
+        .about-text h2 {
+            color: #562703;
+            margin-top: 30px;
+        }
+
+        .about-text ul {
+            padding-left: 20px;
+        }
+
+        .about-text ul li {
+            margin-bottom: 10px;
+        }
+
+        .about-image {
+            flex: 1 1 35%;
+        }
+
+        .about-image img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        footer {
+            background-color: #901414;
+            color: #fff;
+            padding: 40px 20px 20px;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .footer-section h3 {
+            color: #ffb400;
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer-section ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 20px;
+            border-top: 1px solid #777;
+            padding-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <a href="{{ url_for('index') }}">Bandozee</a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('about') }}" class="active">About</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                    {% if session.user_id %}
+                    <li><a href="{{ url_for('cart') }}">Cart</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout ({{ session.user_name }})</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="about-section">
+            <h1>About Bandozee Traditional Attire</h1>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Bandozee is a Durban-based traditional attire company dedicated to preserving and promoting the rich cultural heritage of South Africa through authentic, high-quality clothing and accessories.</p>
+                    
+                    <p>Founded in 2010, our mission has always been to provide beautifully crafted traditional garments that celebrate our diverse cultures while incorporating contemporary elements for modern appeal.</p>
+                    
+                    <h2>Our Values</h2>
+                    <ul>
+                        <li>Cultural preservation and celebration</li>
+                        <li>Exceptional craftsmanship and quality</li>
+                        <li>Authenticity in design and materials</li>
+                        <li>Community empowerment through job creation</li>
+                        <li>Sustainable and ethical production practices</li>
+                    </ul>
+                    
+                    <h2>Our Craftspeople</h2>
+                    <p>All our products are handmade by skilled local artisans who have mastered traditional techniques passed down through generations. We work directly with communities across KwaZulu-Natal to ensure fair wages and preserve these important cultural skills.</p>
+                </div>
+                <div class="about-image">
+                    <img src="{{ url_for('static', filename='images/13.jpg') }}" alt="Bandozee Store">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Bandozee Traditional Attire</h3>
+                <p>Celebrating South African heritage through authentic traditional clothing</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('about') }}">About Us</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p>123 Cultural Village, Durban</p>
+                <p>Phone: +27 (031) 123-4567</p>
+                <p>Email: info@bandozee.co.za</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Bandozee Traditional Attire. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

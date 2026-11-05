@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Messages - Bandozee Traditional Attire</title>
+  <style>
+    /* === Global Styles === */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background: #fafafa;
+      color: #333;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    h1, h2, h3 {
+      margin-bottom: 10px;
+      color: #222;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px 0;
+    }
+
+    /* === Navbar === */
+    .navbar {
+      background: #222;
+      color: #fff;
+      padding: 15px 0;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 90%;
+      margin: auto;
+    }
+    .logo a {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+    }
+    .nav-menu {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    .nav-menu li a {
+      color: #fff;
+      transition: color 0.3s;
+    }
+    .nav-menu li a:hover,
+    .nav-menu li a.active {
+      color: #f39c12;
+    }
+
+    /* === Admin Content === */
+    .admin-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-top: 30px;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      border: none;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background: #f39c12;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #d35400;
+    }
+
+    .btn-secondary {
+      background: #3498db;
+      color: #fff;
+    }
+
+    .btn-secondary:hover {
+      background: #2980b9;
+    }
+
+    .btn-danger {
+      background: #e74c3c;
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* === Messages Table === */
+    .messages-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .messages-table th,
+    .messages-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .messages-table th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+
+    .messages-table tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .message-preview {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-new {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    .status-read {
+      color: #27ae60;
+    }
+
+    .status-replied {
+      color: #3498db;
+    }
+
+    /* === Message Detail Modal === */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .close-modal {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .close-modal:hover {
+      color: #333;
+    }
+
+    .message-detail {
+      margin-bottom: 20px;
+    }
+
+    .message-detail-item {
+      margin-bottom: 10px;
+    }
+
+    .message-detail-label {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .message-body {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+
+    /* === Loading Spinner === */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* === Footer === */
+    footer {
+      background: #222;
+      color: #fff;
+      margin-top: 40px;
+    }
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 20px 10%;
+    }
+    .footer-section h3 {
+      margin-bottom: 10px;
+      color: #f39c12;
+    }
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    .footer-section ul li {
+      margin-bottom: 8px;
+    }
+    .footer-section ul li a {
+      color: #ddd;
+    }
+    .footer-bottom {
+      background: #111;
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9rem;
+    }
+
+    /* === Responsive === */
+    @media (max-width: 768px) {
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .filter-controls {
+        flex-wrap: wrap;
+      }
+      
+      .messages-table {
+        font-size: 0.9rem;
+      }
+      
+      .messages-table th,
+      .messages-table td {
+        padding: 8px 10px;
+      }
+      
+      .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="logo">
+          <a href="{{ url_for('index') }}">Bandozee Admin</a>
+        </div>
+        <ul class="nav-menu">
+          <li><a href="{{ url_for('index') }}">Site Home</a></li>
+          <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('admin_messages') }}" class="active">Messages</a></li>
+          <li><a href="{{ url_for('admin_products') }}">Products</a></li>
+          <li><a href="{{ url_for('admin_customers') }}">Customers</a></li>
+          <li><a href="{{ url_for('admin_rentals') }}">Rentals</a></li>
+          <li><a href="{{ url_for('admin_logout') }}">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="admin-content">
+      <div class="admin-header">
+        <h1>Customer Messages</h1>
+        <div class="filter-controls">
+          <button class="btn btn-primary" id="filter-all">All Messages</button>
+          <button class="btn btn-secondary" id="filter-new">New</button>
+          <button class="btn btn-secondary" id="filter-read">Read</button>
+          <button class="btn btn-secondary" id="filter-replied">Replied</button>
+        </div>
+      </div>
+
+      <table class="messages-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Message Preview</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="messages-list">
+          {% for message in messages %}
+          <tr data-id="{{ message[0] }}" data-status="{{ message[5] }}">
+            <td>{{ message[6].split(' ')[0] if message[6] else 'N/A' }}</td>
+            <td>{{ message[1] }}</td>
+            <td>{{ message[2] }}</td>
+            <td>{{ message[3] }}</td>
+            <td class="message-preview">{{ message[4][:50] }}{% if message[4]|length > 50 %}...{% endif %}</td>
+            <td>
+              {% if message[5] == 'new' %}
+                <span class="status-new">New</span>
+              {% elif message[5] == 'read' %}
+                <span class="status-read">Read</span>
+              {% elif message[5] == 'replied' %}
+                <span class="status-replied">Replied</span>
+              {% else %}
+                <span>{{ message[5] }}</span>
+              {% endif %}
+            </td>
+            <td>
+              <button class="btn btn-primary view-message" data-id="{{ message[0] }}">View</button>
+              <button class="btn btn-danger delete-message" data-id="{{ message[0] }}">Delete</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Message Detail Modal -->
+  <div class="modal" id="message-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Message Details</h2>
+        <span class="close-modal">&times;</span>
+      </div>
+      <div class="message-detail">
+        <div class="message-detail-item">
+          <span class="message-detail-label">Date:</span>
+          <span id="modal-date">2023-10-15</span>
+        </div>
+        <div class="message-detail-item">
+          <span class="message-detail-label">From:</span>
+          <span id="modal-name">John Doe</span> (<span id="modal-email">john.doe@example.com</span>)
+        </div>
+        <div class="message-detail-item">
+          <span class="message-detail-label">Subject:</span>
+          <span id="modal-subject">Question about product sizing</span>
+        </div>
+        <div class="message-detail-item">
+          <span class="message-detail-label">Message:</span>
+          <div class="message-body" id="modal-message">
+            I'm interested in purchasing a traditional shirt but I'm unsure about the sizing. Could you provide measurements for your medium size? Also, do you offer international shipping?
+          </div>
+        </div>
+      </div>
+      <div>
+        <button class="btn btn-primary" id="reply-btn">Reply to Message</button>
+        <button class="btn btn-secondary" id="mark-read">Mark as Read</button>
+        <button class="btn btn-secondary" id="mark-replied">Mark as Replied</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Bandozee Traditional Attire</h3>
+        <p>Celebrating South African heritage through authentic traditional clothing</p>
+      </div>
+      <div class="footer-section">
+        <h3>Admin Links</h3>
+        <ul>
+          <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('admin_messages') }}">Messages</a></li>
+          <li><a href="{{ url_for('admin_products') }}">Products</a></li>
+          <li><a href="{{ url_for('admin_customers') }}">Customers</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Contact Info</h3>
+        <p>123 Cultural Village, Durban</p>
+        <p>Phone: +27 (031) 123-4567</p>
+        <p>Email: info@bandozee.co.za</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2023 Bandozee Traditional Attire. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // DOM elements
+    const messagesList = document.getElementById('messages-list');
+    const messageModal = document.getElementById('message-modal');
+    const closeModal = document.querySelector('.close-modal');
+    const filterButtons = document.querySelectorAll('.filter-controls button');
+
+    // Store current message data
+    let currentMessageId = null;
+    let currentMessageStatus = null;
+
+    // Function to show message details in modal
+    function showMessageDetails(messageId) {
+      const messageRow = document.querySelector(`tr[data-id="${messageId}"]`);
+      if (!messageRow) return;
+
+      const messageData = {
+        id: messageId,
+        date: messageRow.cells[0].textContent,
+        name: messageRow.cells[1].textContent,
+        email: messageRow.cells[2].textContent,
+        subject: messageRow.cells[3].textContent,
+        message: messageRow.querySelector('.message-preview').textContent,
+        status: messageRow.getAttribute('data-status')
+      };
+
+      // Populate modal with message data
+      document.getElementById('modal-date').textContent = messageData.date;
+      document.getElementById('modal-name').textContent = messageData.name;
+      document.getElementById('modal-email').textContent = messageData.email;
+      document.getElementById('modal-subject').textContent = messageData.subject;
+      document.getElementById('modal-message').textContent = messageData.message;
+
+      // Update status buttons based on current status
+      const markReadBtn = document.getElementById('mark-read');
+      const markRepliedBtn = document.getElementById('mark-replied');
+      
+      markReadBtn.disabled = messageData.status === 'read' || messageData.status === 'replied';
+      markRepliedBtn.disabled = messageData.status === 'replied';
+
+      // Store current message info
+      currentMessageId = messageId;
+      currentMessageStatus = messageData.status;
+
+      messageModal.style.display = 'flex';
+    }
+
+    // Function to update message status via AJAX
+    async function updateMessageStatus(messageId, newStatus) {
+      try {
+        const response = await fetch(`/admin/messages/update_status/${messageId}/${newStatus}`);
+        const result = await response.json();
+        
+        if (result.success) {
+          // Update the row in the table
+          const messageRow = document.querySelector(`tr[data-id="${messageId}"]`);
+          if (messageRow) {
+            messageRow.setAttribute('data-status', newStatus);
+            
+            // Update status display
+            const statusCell = messageRow.cells[5];
+            let statusClass = '';
+            let statusText = '';
+            
+            switch(newStatus) {
+              case 'new':
+                statusClass = 'status-new';
+                statusText = 'New';
+                break;
+              case 'read':
+                statusClass = 'status-read';
+                statusText = 'Read';
+                break;
+              case 'replied':
+                statusClass = 'status-replied';
+                statusText = 'Replied';
+                break;
+            }
+            
+            statusCell.innerHTML = `<span class="${statusClass}">${statusText}</span>`;
+            
+            // If modal is open for this message, update the status buttons
+            if (currentMessageId === messageId) {
+              const markReadBtn = document.getElementById('mark-read');
+              const markRepliedBtn = document.getElementById('mark-replied');
+              
+              markReadBtn.disabled = newStatus === 'read' || newStatus === 'replied';
+              markRepliedBtn.disabled = newStatus === 'replied';
+              currentMessageStatus = newStatus;
+            }
+          }
+          
+          showNotification('Message status updated successfully!', 'success');
+        } else {
+          showNotification('Error updating message status: ' + result.error, 'error');
+        }
+      } catch (error) {
+        showNotification('Error updating message status: ' + error.message, 'error');
+      }
+    }
+
+    // Function to delete a message
+    async function deleteMessage(messageId) {
+      if (!confirm('Are you sure you want to delete this message? This action cannot be undone.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/admin/messages/delete/${messageId}`);
+        if (response.redirected) {
+          // If redirected, the delete was successful and we should reload the page
+          window.location.reload();
+        } else {
+          const result = await response.json();
+          if (result.success) {
+            // Remove the message row from the table
+            const messageRow = document.querySelector(`tr[data-id="${messageId}"]`);
+            if (messageRow) {
+              messageRow.remove();
+            }
+            showNotification('Message deleted successfully!', 'success');
+          } else {
+            showNotification('Error deleting message: ' + result.error, 'error');
+          }
+        }
+      } catch (error) {
+        showNotification('Error deleting message: ' + error.message, 'error');
+      }
+    }
+
+    // Function to show notification
+    function showNotification(message, type) {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        z-index: 1001;
+        transition: all 0.3s ease;
+        background-color: ${type === 'success' ? '#27ae60' : '#e74c3c'};
+      `;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      // Remove notification after 3 seconds
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // Function to attach event listeners
+    function attachEventListeners() {
+      // View message buttons
+      document.querySelectorAll('.view-message').forEach(button => {
+        button.addEventListener('click', function() {
+          const messageId = this.getAttribute('data-id');
+          showMessageDetails(messageId);
+        });
+      });
+      
+      // Delete message buttons
+      document.querySelectorAll('.delete-message').forEach(button => {
+        button.addEventListener('click', function() {
+          const messageId = this.getAttribute('data-id');
+          deleteMessage(messageId);
+        });
+      });
+    }
+
+    // Event listeners for filter buttons
+    filterButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const filter = this.id.replace('filter-', '');
+        
+        // Show all rows if 'all' filter
+        if (filter === 'all') {
+          document.querySelectorAll('#messages-list tr').forEach(row => {
+            row.style.display = '';
+          });
+        } else {
+          // Show only rows with matching status
+          document.querySelectorAll('#messages-list tr').forEach(row => {
+            if (row.getAttribute('data-status') === filter) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        }
+        
+        // Update active filter button
+        filterButtons.forEach(btn => btn.classList.remove('btn-primary'));
+        filterButtons.forEach(btn => btn.classList.add('btn-secondary'));
+        this.classList.remove('btn-secondary');
+        this.classList.add('btn-primary');
+      });
+    });
+
+    // Modal close functionality
+    closeModal.addEventListener('click', function() {
+      messageModal.style.display = 'none';
+      currentMessageId = null;
+      currentMessageStatus = null;
+    });
+
+    // Close modal when clicking outside of it
+    window.addEventListener('click', function(event) {
+      if (event.target === messageModal) {
+        messageModal.style.display = 'none';
+        currentMessageId = null;
+        currentMessageStatus = null;
+      }
+    });
+
+    // Status update buttons in modal
+    document.getElementById('mark-read').addEventListener('click', function() {
+      if (currentMessageId) {
+        updateMessageStatus(currentMessageId, 'read');
+      }
+    });
+
+    document.getElementById('mark-replied').addEventListener('click', function() {
+      if (currentMessageId) {
+        updateMessageStatus(currentMessageId, 'replied');
+      }
+    });
+
+    // Reply button functionality
+    document.getElementById('reply-btn').addEventListener('click', function() {
+      if (currentMessageId) {
+        const email = document.getElementById('modal-email').textContent;
+        const subject = document.getElementById('modal-subject').textContent;
+        
+        // Open email client with pre-filled recipient and subject
+        window.location.href = `mailto:${email}?subject=Re: ${encodeURIComponent(subject)}`;
+        
+        // Mark as replied if not already
+        if (currentMessageStatus !== 'replied') {
+          updateMessageStatus(currentMessageId, 'replied');
+        }
+        
+        messageModal.style.display = 'none';
+        currentMessageId = null;
+        currentMessageStatus = null;
+      }
+    });
+
+    // Initial attachment of event listeners
+    attachEventListeners();
+  </script>
+</body>
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Management - Bandozee Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Zulu Color Palette */
+        :root {
+            --zulu-red: #E41B23;
+            --zulu-black: #000000;
+            --zulu-white: #FFFFFF;
+            --zulu-yellow: #F7D038;
+            --zulu-green: #006F3C;
+            --earth-brown: #8B4513;
+            --cream: #F5F5DC;
+            --light-brown: #CD853F;
+        }
+        
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--cream);
+            color: var(--zulu-black);
+            line-height: 1.6;
+            position: relative;
+        }
+        
+        /* Zulu pattern background overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, rgba(228, 27, 35, 0.03) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(228, 27, 35, 0.03) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, rgba(228, 27, 35, 0.03) 75%),
+                linear-gradient(-45deg, transparent 75%, rgba(228, 27, 35, 0.03) 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--zulu-black), var(--earth-brown));
+            color: var(--zulu-white);
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo a {
+            display: flex;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--zulu-white);
+            text-decoration: none;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 2.2rem;
+            color: var(--zulu-red);
+        }
+        
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-menu a {
+            color: var(--zulu-white);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .nav-menu a i {
+            margin-right: 6px;
+            font-size: 1.1rem;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background-color: rgba(228, 27, 35, 0.8);
+            transform: translateY(-2px);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--zulu-red);
+            color: var(--zulu-white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--earth-brown);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--zulu-white);
+            color: var(--zulu-white);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--zulu-white);
+            color: var(--zulu-red);
+        }
+        
+        .btn-secondary {
+            background-color: var(--zulu-green);
+            color: var(--zulu-white);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--earth-brown);
+            transform: translateY(-2px);
+        }
+        
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: var(--zulu-white);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        /* Admin Content Styles */
+        .admin-container {
+            min-height: 80vh;
+            padding: 40px 0;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--zulu-red);
+        }
+        
+        .admin-title {
+            color: var(--earth-brown);
+            font-size: 2.5rem;
+        }
+        
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: var(--zulu-white);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .data-table th {
+            background-color: var(--zulu-black);
+            color: var(--zulu-white);
+            font-weight: 600;
+        }
+        
+        .data-table tr:hover {
+            background-color: rgba(228, 27, 35, 0.05);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Customer Stats */
+        .customer-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background-color: var(--zulu-white);
+            padding: 25px 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--zulu-yellow);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--earth-brown);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--zulu-red);
+        }
+        
+        /* Flash Messages */
+        .flash-messages {
+            margin: 20px 0;
+        }
+        
+        .flash {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .flash.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .flash.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(to right, var(--zulu-black), var(--earth-brown));
+            color: var(--zulu-white);
+            padding: 50px 0 20px;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            color: var(--zulu-white);
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--zulu-red);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-section a {
+            color: var(--cream);
+            transition: color 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            color: var(--zulu-red);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--zulu-white);
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--zulu-red);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav-menu {
+                margin: 20px 0;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .auth-buttons {
+                margin-top: 20px;
+            }
+            
+            .admin-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .customer-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="{{ url_for('index') }}">
+                    <i class="fas fa-vest-patches"></i>
+                    <span>Bandozee Admin</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('admin_products') }}"><i class="fas fa-tshirt"></i> Products</a></li>
+                <li><a href="{{ url_for('admin_customers') }}" class="active"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="{{ url_for('admin_rentals') }}"><i class="fas fa-calendar-alt"></i> Rentals</a></li>
+                <li><a href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <a href="{{ url_for('index') }}" class="btn btn-outline"><i class="fas fa-home"></i> View Site</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="container admin-container">
+        <div class="admin-header">
+            <h1 class="admin-title">Customer Management</h1>
+            <div class="customer-count">
+                <span class="stat-number">{{ customers|length }}</span> Total Customers
+            </div>
+        </div>
+
+        <!-- Customer Statistics -->
+        <div class="customer-stats">
+            <div class="stat-card">
+                <h3>Total Customers</h3>
+                <p class="stat-number">{{ customers|length }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Recent Signups</h3>
+                <p class="stat-number">{{ customers|selectattr("6")|list|length if customers else 0 }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Active Users</h3>
+                <p class="stat-number">-</p>
+            </div>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Join Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                    <td>{{ customer[0] }}</td>
+                    <td>{{ customer[1] }}</td>
+                    <td>{{ customer[2] }}</td>
+                    <td>{{ customer[5] if customer[5] else 'N/A' }}</td>
+                    <td>{{ customer[4] if customer[4] else 'N/A' }}</td>
+                    <td>{{ customer[6] if customer[6] else 'N/A' }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="#" class="btn btn-small btn-secondary">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <a href="{{ url_for('admin_delete_customer', customer_id=customer[0]) }}" 
+                               class="btn btn-small btn-danger" 
+                               onclick="return confirm('Are you sure you want to delete this customer? This action cannot be undone.')">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 30px;">
+                        <p>No customers found in the database.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Bandozee Admin</h3>
+                    <p>Manage your traditional attire store with ease and preserve cultural heritage through quality products.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Admin Links</h3>
+                    <ul>
+                        <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('admin_products') }}">Products</a></li>
+                        <li><a href="{{ url_for('admin_customers') }}">Customers</a></li>
+                        <li><a href="{{ url_for('admin_rentals') }}">Rentals</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Cultural Village, Durban, South Africa</p>
+                    <p><i class="fas fa-phone"></i> +27 (031) 123-4567</p>
+                    <p><i class="fas fa-envelope"></i> admin@bandozee.co.za</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Bandozee Traditional Attire. Admin Access Only.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple confirmation for delete actions
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.btn-danger');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (!confirm('Are you sure you want to delete this customer? This action cannot be undone.')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

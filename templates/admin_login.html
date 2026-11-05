@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bandozee - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Zulu Color Palette */
+        :root {
+            --zulu-red: #E41B23;
+            --zulu-black: #000000;
+            --zulu-white: #FFFFFF;
+            --zulu-yellow: #F7D038;
+            --zulu-green: #006F3C;
+            --earth-brown: #8B4513;
+            --cream: #F5F5DC;
+            --light-brown: #CD853F;
+        }
+        
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--cream);
+            color: var(--zulu-black);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--zulu-black), var(--earth-brown));
+            color: var(--zulu-white);
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--zulu-white);
+            text-decoration: none;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 2.2rem;
+            color: var(--zulu-red);
+        }
+        
+        /* Admin Login */
+        .admin-login {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 70vh;
+            padding: 40px 0;
+        }
+        
+        .login-container {
+            background: var(--zulu-white);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+        }
+        
+        .login-header {
+            background: linear-gradient(to right, var(--zulu-black), var(--earth-brown));
+            color: var(--zulu-white);
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .login-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .login-form {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--earth-brown);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--zulu-red);
+            outline: none;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--zulu-red);
+            color: var(--zulu-white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--earth-brown);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Flash Messages */
+        .flash-messages {
+            margin: 20px 0;
+        }
+        
+        .flash {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .flash.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .flash.danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Admin Navigation */
+        .admin-nav {
+            background: var(--zulu-black);
+            padding: 1rem 0;
+        }
+        
+        .admin-nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            justify-content: center;
+        }
+        
+        .admin-nav-menu li a {
+            color: var(--zulu-white);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .admin-nav-menu li a:hover,
+        .admin-nav-menu li a.active {
+            background-color: var(--zulu-red);
+        }
+        
+        /* Admin Content */
+        .admin-content {
+            padding: 40px 0;
+        }
+        
+        .admin-section {
+            display: none;
+        }
+        
+        .admin-section.active {
+            display: block;
+        }
+        
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-card {
+            background: var(--zulu-white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-top: 4px solid var(--zulu-red);
+        }
+        
+        .dashboard-card h3 {
+            color: var(--earth-brown);
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--zulu-red);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--light-brown);
+            color: var(--zulu-white);
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-edit {
+            background-color: var(--zulu-yellow);
+            color: var(--zulu-black);
+        }
+        
+        .btn-delete {
+            background-color: var(--zulu-red);
+            color: var(--zulu-white);
+        }
+        
+        .btn-view {
+            background-color: var(--zulu-green);
+            color: var(--zulu-white);
+        }
+        
+        .btn-add {
+            background-color: var(--zulu-green);
+            color: var(--zulu-white);
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(to right, var(--zulu-black), var(--earth-brown));
+            color: var(--zulu-white);
+            padding: 40px 0 20px;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="{{ url_for('index') }}" class="logo">
+                    <i class="fas fa-vest-patches"></i>
+                    <span>Bandozee Admin</span>
+                </a>
+                <div>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">Customer View</a>
+                    {% if session.get('admin_logged_in') %}
+                    <a href="{{ url_for('admin_logout') }}" class="btn btn-primary">Logout</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Flash Messages -->
+    <div class="container flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Admin Login -->
+    {% if not session.get('admin_logged_in') %}
+    <section class="admin-login" id="adminLogin">
+        <div class="container">
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>Admin Login</h1>
+                    <p>Access the Bandozee administration panel</p>
+                </div>
+                
+                <form class="login-form" method="POST" action="{{ url_for('admin_login') }}">
+                    <div class="form-group">
+                        <label for="adminEmail">Email Address</label>
+                        <input type="email" id="adminEmail" name="email" required placeholder="Enter admin email" value="admin@bandozee.co.za">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" name="password" required placeholder="Enter admin password" value="admin123">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    {% else %}
+
+    <!-- Admin Navigation -->
+    <nav class="admin-nav">
+        <div class="container">
+            <ul class="admin-nav-menu">
+                <li><a href="{{ url_for('admin_dashboard') }}" class="{% if request.endpoint == 'admin_dashboard' %}active{% endif %}">Dashboard</a></li>
+                <li><a href="{{ url_for('admin_products') }}" class="{% if request.endpoint == 'admin_products' %}active{% endif %}">Products</a></li>
+                <li><a href="{{ url_for('admin_customers') }}" class="{% if request.endpoint == 'admin_customers' %}active{% endif %}">Customers</a></li>
+                <li><a href="{{ url_for('admin_rentals') }}" class="{% if request.endpoint == 'admin_rentals' %}active{% endif %}">Rentals</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Admin Dashboard Content -->
+    <section class="admin-content">
+        <div class="container">
+            {% if request.endpoint == 'admin_dashboard' %}
+            <!-- Dashboard Section -->
+            <div class="admin-section active">
+                <h1>Bandozee Admin Dashboard</h1>
+                <p>Manage products, customers, and orders</p>
+                
+                <div class="dashboard-cards">
+                    <div class="dashboard-card">
+                        <h3>Total Products</h3>
+                        <div class="number">{{ product_count }}</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Registered Customers</h3>
+                        <div class="number">{{ user_count }}</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Pending Orders</h3>
+                        <div class="number">{{ pending_orders }}</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Active Rentals</h3>
+                        <div class="number">{{ active_rentals }}</div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="dashboard-section">
+                    <h2>Recent Orders</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>User ID</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in recent_orders %}
+                                <tr>
+                                    <td>#{{ order[0] }}</td>
+                                    <td>{{ order[1] }}</td>
+                                    <td>R{{ "%.2f"|format(order[2]) }}</td>
+                                    <td>{{ order[3] }}</td>
+                                    <td>{{ order[4] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Users -->
+                <div class="dashboard-section">
+                    <h2>Recent Users</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Join Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in recent_users %}
+                                <tr>
+                                    <td>{{ user[0] }}</td>
+                                    <td>{{ user[1] }}</td>
+                                    <td>{{ user[2] }}</td>
+                                    <td>{{ user[6] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Rentals -->
+                <div class="dashboard-section">
+                    <h2>Recent Rentals</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rental ID</th>
+                                    <th>Customer</th>
+                                    <th>Product</th>
+                                    <th>Duration</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rental in recent_rentals %}
+                                <tr>
+                                    <td>#{{ rental[0] }}</td>
+                                    <td>{{ rental[1] }}</td>
+                                    <td>{{ rental[2] }}</td>
+                                    <td>{{ rental[3] }} days</td>
+                                    <td>R{{ "%.2f"|format(rental[4]) }}</td>
+                                    <td>{{ rental[5] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if request.endpoint == 'admin_products' %}
+            <!-- Products Management Section -->
+            <div class="admin-section active">
+                <h1>Product Management</h1>
+                <a href="{{ url_for('admin_add_product') }}" class="btn-add">Add New Product</a>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Rental Price</th>
+                                <th>Category</th>
+                                <th>Gender</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr>
+                                <td>{{ product[0] }}</td>
+                                <td><img src="{{ product[8] }}" alt="{{ product[1] }}" style="width: 50px; height: 50px; object-fit: cover;"></td>
+                                <td>{{ product[1] }}</td>
+                                <td>R{{ "%.2f"|format(product[2]) }}</td>
+                                <td>R{{ "%.2f"|format(product[3]) }}</td>
+                                <td>{{ product[5] }}</td>
+                                <td>{{ product[7] }}</td>
+                                <td>{{ product[9] }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin_edit_product', product_id=product[0]) }}" class="action-btn btn-edit">Edit</a>
+                                    <a href="{{ url_for('admin_delete_product', product_id=product[0]) }}" class="action-btn btn-delete" onclick="return confirm('Are you sure you want to delete this product?')">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if request.endpoint == 'admin_customers' %}
+            <!-- Customers Management Section -->
+            <div class="admin-section active">
+                <h1>Customer Management</h1>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>Join Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for customer in customers %}
+                            <tr>
+                                <td>{{ customer[0] }}</td>
+                                <td>{{ customer[1] }}</td>
+                                <td>{{ customer[2] }}</td>
+                                <td>{{ customer[5] }}</td>
+                                <td>{{ customer[4] }}</td>
+                                <td>{{ customer[6] }}</td>
+                                <td>
+                                    <a href="#" class="action-btn btn-view">View Orders</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if request.endpoint == 'admin_rentals' %}
+            <!-- Rentals Management Section -->
+            <div class="admin-section active">
+                <h1>Rental Management</h1>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rental ID</th>
+                                <th>Customer</th>
+                                <th>Product</th>
+                                <th>Duration</th>
+                                <th>Total Price</th>
+                                <th>Status</th>
+                                <th>Rental Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rental in rentals %}
+                            <tr>
+                                <td>#{{ rental[0] }}</td>
+                                <td>{{ rental[7] }}<br><small>{{ rental[8] }}</small></td>
+                                <td>{{ rental[9] }}</td>
+                                <td>{{ rental[3] }} days</td>
+                                <td>R{{ "%.2f"|format(rental[4]) }}</td>
+                                <td>
+                                    {% if rental[5] == 'pending' %}
+                                        <span style="background-color: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 3px;">Pending</span>
+                                    {% elif rental[5] == 'active' %}
+                                        <span style="background-color: #d1ecf1; color: #0c5460; padding: 3px 8px; border-radius: 3px;">Active</span>
+                                    {% else %}
+                                        <span style="background-color: #d4edda; color: #155724; padding: 3px 8px; border-radius: 3px;">Completed</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ rental[6] }}</td>
+                                <td>
+                                    {% if rental[5] == 'pending' %}
+                                        <a href="#" class="action-btn btn-edit">Approve</a>
+                                    {% endif %}
+                                    <a href="#" class="action-btn btn-view">Details</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Bandozee</h3>
+                    <p>Bandozee is a Durban-based traditional attire store specializing in authentic African clothing and accessories.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{{ url_for('index') }}">Home</a></li>
+                        <li><a href="{{ url_for('products') }}">Products</a></li>
+                        <li><a href="{{ url_for('rentals') }}">Rentals</a></li>
+                        <li><a href="{{ url_for('about') }}">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Cultural Village, Durban, South Africa</p>
+                    <p><i class="fas fa-phone"></i> +27 (031) 123-4567</p>
+                    <p><i class="fas fa-envelope"></i> info@bandozee.co.za</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Bandozee Traditional Attire. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - Bandozee</title>
+  <style>
+    /* === Global Styles === */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background: #fafafa;
+      color: #333;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    h1, h2, h3 {
+      margin-bottom: 10px;
+      color: #222;
+    }
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px 0;
+    }
+
+    /* === Navbar === */
+    .navbar {
+      background: #222;
+      color: #fff;
+      padding: 15px 0;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 90%;
+      margin: auto;
+    }
+    .logo a {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+    }
+    .nav-menu {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    .nav-menu li a {
+      color: #fff;
+      transition: color 0.3s;
+    }
+    .nav-menu li a:hover,
+    .nav-menu li a.active {
+      color: #f39c12;
+    }
+
+    /* === Cart Table === */
+    .cart-items {
+      margin-top: 30px;
+    }
+    .cart-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .cart-table th, .cart-table td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    .cart-table th {
+      background: #f39c12;
+      color: #fff;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+    .cart-product {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .cart-product img {
+      width: 60px;
+      height: 60px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+    .cart-type, .cart-price, .cart-details, .cart-total {
+      font-size: 0.95rem;
+    }
+
+    /* === Quantity Controls === */
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 5px;
+    }
+
+    .quantity-btn {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ddd;
+      background: #f8f9fa;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .quantity-btn:hover {
+      background: #e9ecef;
+      border-color: #adb5bd;
+    }
+
+    .quantity-btn:disabled {
+      background: #f8f9fa;
+      color: #adb5bd;
+      cursor: not-allowed;
+    }
+
+    .quantity-input {
+      width: 50px;
+      height: 30px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .quantity-input:focus {
+      outline: none;
+      border-color: #f39c12;
+    }
+
+    /* Rental Days Controls */
+    .rental-days-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 5px;
+    }
+
+    .rental-days-input {
+      width: 60px;
+      height: 30px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    /* === Badges === */
+    .badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #fff;
+    }
+    .badge-purchase {
+      background: #27ae60;
+    }
+    .badge-rental {
+      background: #2980b9;
+    }
+
+    /* === Actions === */
+    .cart-action .btn-remove {
+      background: #e74c3c;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      transition: background 0.3s;
+    }
+    .cart-action .btn-remove:hover {
+      background: #c0392b;
+    }
+    .cart-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn-primary {
+      background: #f39c12;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #d35400;
+    }
+    .btn-secondary {
+      background: #555;
+      color: #fff;
+    }
+    .btn-secondary:hover {
+      background: #333;
+    }
+
+    /* === Empty Cart === */
+    .empty-cart {
+      text-align: center;
+      padding: 50px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .empty-cart h2 {
+      margin-bottom: 15px;
+    }
+
+    /* === Popup Notification === */
+    .popup-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #27ae60;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+    }
+
+    .popup-notification.show {
+      transform: translateX(0);
+    }
+
+    .popup-notification.error {
+      background: #e74c3c;
+    }
+
+    .popup-notification.warning {
+      background: #f39c12;
+    }
+
+    .popup-notification i {
+      font-size: 1.2rem;
+    }
+
+    .popup-notification .popup-message {
+      font-weight: 500;
+    }
+
+    .popup-notification .popup-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    /* === Footer === */
+    footer {
+      background: #222;
+      color: #fff;
+      margin-top: 40px;
+    }
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 20px 10%;
+    }
+    .footer-section h3 {
+      margin-bottom: 10px;
+      color: #f39c12;
+    }
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    .footer-section ul li {
+      margin-bottom: 8px;
+    }
+    .footer-section ul li a {
+      color: #ddd;
+    }
+    .footer-bottom {
+      background: #111;
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9rem;
+    }
+
+    /* === Responsive === */
+    @media (max-width: 768px) {
+      .cart-table, .cart-table thead, .cart-table tbody, .cart-table th, .cart-table td, .cart-table tr {
+        display: block;
+        width: 100%;
+      }
+      .cart-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #eee;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .cart-table td {
+        border: none;
+        padding: 10px;
+        text-align: right;
+        position: relative;
+      }
+      .cart-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      .cart-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .quantity-controls,
+      .rental-days-controls {
+        justify-content: flex-end;
+      }
+
+      .popup-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        transform: translateY(-100px);
+      }
+
+      .popup-notification.show {
+        transform: translateY(0);
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Popup Notification -->
+  <div id="popupNotification" class="popup-notification">
+    <i class="fas fa-check-circle"></i>
+    <span class="popup-message"></span>
+    <button class="popup-close" onclick="hidePopup()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <header>
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="logo">
+          <a href="{{ url_for('index') }}">Bandozee</a>
+        </div>
+        <ul class="nav-menu">
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="{{ url_for('products') }}">Products</a></li>
+          <li><a href="{{ url_for('about') }}">About</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+          {% if session.user_id %}
+          <li><a href="{{ url_for('cart') }}" class="active">Cart</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout ({{ session.user_name }})</a></li>
+          {% else %}
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1>Shopping Cart</h1>
+
+    <div class="cart-items">
+      {% if cart_items %}
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Type</th>
+            <th>Price</th>
+            <th>Quantity/Days</th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cart_items %}
+          <tr class="cart-item-{{ item.type }}" data-item-id="{{ item.id }}" data-item-type="{{ item.type }}">
+            <td class="cart-product" data-label="Product">
+              <img src="{{ item.image }}" alt="{{ item.name }}">
+              <div class="cart-product-info">
+                <h3>{{ item.name }}</h3>
+              </div>
+            </td>
+            <td class="cart-type" data-label="Type">
+              {% if item.type == 'purchase' %}
+                <span class="badge badge-purchase">PURCHASE</span>
+              {% else %}
+                <span class="badge badge-rental">RENTAL</span>
+              {% endif %}
+            </td>
+            <td class="cart-price" data-label="Price">
+              {% if item.type == 'purchase' %}
+                R<span class="unit-price">{{ "%.2f"|format(item.price / item.quantity) }}</span>
+              {% else %}
+                R<span class="unit-price">{{ "%.2f"|format(item.rental_price) }}</span>/day
+              {% endif %}
+            </td>
+            <td class="cart-details" data-label="Quantity/Days">
+              {% if item.type == 'purchase' %}
+              <div class="quantity-controls">
+                <button class="quantity-btn minus-btn" onclick="updateQuantity('{{ item.id }}', -1)">-</button>
+                <input type="number" 
+                       class="quantity-input" 
+                       value="{{ item.quantity }}" 
+                       min="1" 
+                       max="99"
+                       onchange="updateQuantityInput('{{ item.id }}', this.value)"
+                       onblur="validateQuantity('{{ item.id }}', this)">
+                <button class="quantity-btn plus-btn" onclick="updateQuantity('{{ item.id }}', 1)">+</button>
+              </div>
+              {% else %}
+              <div class="rental-days-controls">
+                <button class="quantity-btn minus-btn" onclick="updateRentalDays('{{ item.id }}', -1)">-</button>
+                <input type="number" 
+                       class="rental-days-input" 
+                       value="{{ item.rental_days }}" 
+                       min="1" 
+                       max="30"
+                       onchange="updateRentalDaysInput('{{ item.id }}', this.value)"
+                       onblur="validateRentalDays('{{ item.id }}', this)">
+                <button class="quantity-btn plus-btn" onclick="updateRentalDays('{{ item.id }}', 1)">+</button>
+                <span style="font-size: 0.8rem; color: #666;">days</span>
+              </div>
+              {% endif %}
+            </td>
+            <td class="cart-total" data-label="Total">
+              R<span class="item-total">{{ "%.2f"|format(item.price) }}</span>
+            </td>
+            <td class="cart-action" data-label="Action">
+              <a href="{{ url_for('remove_from_cart', product_id=item.id) }}" class="btn-remove" onclick="return confirmRemove()">Remove</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" class="text-right"><strong>Total:</strong></td>
+            <td colspan="2"><strong>R<span id="cart-total">{{ "%.2f"|format(total) }}</span></strong></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="cart-actions">
+        <a href="{{ url_for('products') }}" class="btn btn-secondary">Continue Shopping</a>
+        <a href="{{ url_for('checkout') }}" class="btn btn-primary">Proceed to Checkout</a>
+      </div>
+      {% else %}
+      <div class="empty-cart">
+        <h2>Your cart is empty</h2>
+        <p>Browse our collection and add items to your cart.</p>
+        <a href="{{ url_for('products') }}" class="btn btn-primary">Start Shopping</a>
+      </div>
+      {% endif %}
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Bandozee Traditional Attire</h3>
+        <p>Celebrating South African heritage through authentic traditional clothing</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="{{ url_for('products') }}">Products</a></li>
+          <li><a href="{{ url_for('about') }}">About Us</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Contact Info</h3>
+        <p>123 Cultural Village, Durban</p>
+        <p>Phone: +27 (031) 123-4567</p>
+        <p>Email: info@bandozee.co.za</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2023 Bandozee Traditional Attire. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Popup Notification Functions
+    function showPopup(message, type = 'success') {
+      const popup = document.getElementById('popupNotification');
+      const messageEl = popup.querySelector('.popup-message');
+      const icon = popup.querySelector('i');
+      
+      // Set message and type
+      messageEl.textContent = message;
+      popup.className = `popup-notification ${type}`;
+      
+      // Change icon based on type
+      if (type === 'success') {
+        icon.className = 'fas fa-check-circle';
+      } else if (type === 'error') {
+        icon.className = 'fas fa-exclamation-circle';
+      } else if (type === 'warning') {
+        icon.className = 'fas fa-exclamation-triangle';
+      }
+      
+      // Show popup
+      popup.classList.add('show');
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        hidePopup();
+      }, 5000);
+    }
+
+    function hidePopup() {
+      const popup = document.getElementById('popupNotification');
+      popup.classList.remove('show');
+    }
+
+    function confirmRemove() {
+      return confirm('Are you sure you want to remove this item from your cart?');
+    }
+
+    // Quantity Functions for Purchase Items
+    function updateQuantity(productId, change) {
+      const row = document.querySelector(`tr[data-item-id="${productId}"]`);
+      if (!row) return;
+      
+      const input = row.querySelector('.quantity-input');
+      let newQuantity = parseInt(input.value) + change;
+      
+      if (newQuantity < 1) newQuantity = 1;
+      if (newQuantity > 99) newQuantity = 99;
+      
+      input.value = newQuantity;
+      updateCartItem(productId, newQuantity);
+    }
+
+    function updateQuantityInput(productId, value) {
+      let quantity = parseInt(value);
+      if (isNaN(quantity) || quantity < 1) quantity = 1;
+      if (quantity > 99) quantity = 99;
+      
+      const row = document.querySelector(`tr[data-item-id="${productId}"]`);
+      if (row) {
+        const input = row.querySelector('.quantity-input');
+        input.value = quantity;
+        updateCartItem(productId, quantity);
+      }
+    }
+
+    function validateQuantity(productId, input) {
+      let quantity = parseInt(input.value);
+      if (isNaN(quantity) || quantity < 1) {
+        quantity = 1;
+        input.value = quantity;
+      }
+      if (quantity > 99) {
+        quantity = 99;
+        input.value = quantity;
+      }
+      updateCartItem(productId, quantity);
+    }
+
+    // Rental Days Functions for Rental Items
+    function updateRentalDays(productId, change) {
+      const row = document.querySelector(`tr[data-item-id="${productId}"]`);
+      if (!row) return;
+      
+      const input = row.querySelector('.rental-days-input');
+      let newDays = parseInt(input.value) + change;
+      
+      if (newDays < 1) newDays = 1;
+      if (newDays > 30) newDays = 30;
+      
+      input.value = newDays;
+      updateRentalItem(productId, newDays);
+    }
+
+    function updateRentalDaysInput(productId, value) {
+      let days = parseInt(value);
+      if (isNaN(days) || days < 1) days = 1;
+      if (days > 30) days = 30;
+      
+      const row = document.querySelector(`tr[data-item-id="${productId}"]`);
+      if (row) {
+        const input = row.querySelector('.rental-days-input');
+        input.value = days;
+        updateRentalItem(productId, days);
+      }
+    }
+
+    function validateRentalDays(productId, input) {
+      let days = parseInt(input.value);
+      if (isNaN(days) || days < 1) {
+        days = 1;
+        input.value = days;
+      }
+      if (days > 30) {
+        days = 30;
+        input.value = days;
+      }
+      updateRentalItem(productId, days);
+    }
+
+    function updateCartItem(productId, quantity) {
+      const row = document.querySelector(`tr[data-item-id="${productId}"]`);
+      if (!row) return;
+      
+      const unitPrice = parseFloat(row.querySelector('.unit-price').textContent);
+      const itemTotal = row.querySelector('.item-total');
+      const newItemTotal = unitPrice * quantity;
+      
+      itemTotal.textContent = newItemTotal.toFixed(2);
+      
+      // Update minus button state
+      const minusBtn = row.querySelector('.minus-btn');
+      if (minusBtn) {
+        minusBtn.disabled = quantity <= 1;
+      }
+      
+      updateCartTotal();
+      
+      // Send AJAX request
+      fetch(`/update-cart-quantity/${productId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ quantity: quantity })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('cart-total').textContent = data.total.toFixed(2);
+          showPopup('Quantity updated successfully!', 'success');
+        } else {
+          showPopup('Failed to update quantity. Please try again.', 'error');
+          location.reload();
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showPopup('Error updating quantity. Please try again.', 'error');
+        location.reload();
+      });
+    }
+
+    function updateRentalItem(productId, days) {
+      const row = document.querySelector(`tr[data-item-id="${productId}"]`);
+      if (!row) return;
+      
+      const unitPrice = parseFloat(row.querySelector('.unit-price').textContent);
+      const itemTotal = row.querySelector('.item-total');
+      const newItemTotal = unitPrice * days;
+      
+      itemTotal.textContent = newItemTotal.toFixed(2);
+      
+      // Update minus button state
+      const minusBtn = row.querySelector('.minus-btn');
+      if (minusBtn) {
+        minusBtn.disabled = days <= 1;
+      }
+      
+      updateCartTotal();
+      
+      // Send AJAX request for rental days update
+      fetch(`/update-rental-days/${productId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rental_days: days })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('cart-total').textContent = data.total.toFixed(2);
+          showPopup('Rental days updated successfully!', 'success');
+        } else {
+          showPopup('Failed to update rental days. Please try again.', 'error');
+          location.reload();
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showPopup('Error updating rental days. Please try again.', 'error');
+        location.reload();
+      });
+    }
+
+    function updateCartTotal() {
+      let cartTotal = 0;
+      const itemTotals = document.querySelectorAll('.item-total');
+      
+      itemTotals.forEach(item => {
+        cartTotal += parseFloat(item.textContent);
+      });
+      
+      document.getElementById('cart-total').textContent = cartTotal.toFixed(2);
+    }
+
+    // Initialize buttons state
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize minus buttons for purchase items
+      const purchaseMinusButtons = document.querySelectorAll('.cart-item-purchase .minus-btn');
+      purchaseMinusButtons.forEach(button => {
+        const input = button.parentElement.querySelector('.quantity-input');
+        if (parseInt(input.value) <= 1) {
+          button.disabled = true;
+        }
+      });
+
+      // Initialize minus buttons for rental items
+      const rentalMinusButtons = document.querySelectorAll('.cart-item-rental .minus-btn');
+      rentalMinusButtons.forEach(button => {
+        const input = button.parentElement.querySelector('.rental-days-input');
+        if (parseInt(input.value) <= 1) {
+          button.disabled = true;
+        }
+      });
+
+      // Show welcome message if cart has items
+      if ({{ cart_items|length }} > 0) {
+        showPopup('Cart loaded successfully!', 'success');
+      }
+    });
+  </script>
+</body>
+</html>

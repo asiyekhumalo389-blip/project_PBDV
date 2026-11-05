@@ -1,0 +1,592 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking - Bandozee Traditional Attire</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #720f0f;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo a {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: rgba(73, 52, 52, 0.638);
+            font-weight: bold;
+        }
+
+        /* Main */
+        .main-content {
+            padding: 40px 0;
+            min-height: 70vh;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        /* Order Tracking */
+        .order-tracking {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .tracking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .order-info {
+            flex: 1;
+        }
+
+        .order-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .order-date {
+            color: #666;
+        }
+
+        .tracking-search {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tracking-search input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 250px;
+        }
+
+        .tracking-search button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Progress Bar */
+        .progress-tracking {
+            margin: 40px 0;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+
+        .progress-bar {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 4px;
+            background: var(--success);
+            z-index: 2;
+            transition: width 0.8s ease-in-out;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 3;
+            flex: 1;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-icon,
+        .step.completed .step-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .step.active .step-label {
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* Order Details */
+        .order-details {
+            margin-top: 30px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .detail-card {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .detail-card h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        /* Order Items */
+        .order-items {
+            margin-top: 30px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .items-table th, .items-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .items-table tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .items-table th {
+            background: var(--light);
+            font-weight: 600;
+        }
+
+        /* Status */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-pending { background: var(--warning); color: white; }
+        .status-processing { background: var(--secondary); color: white; }
+        .status-shipped { background: #9b59b6; color: white; }
+        .status-delivered, .status-completed { background: var(--success); color: white; }
+        .status-cancelled { background: var(--danger); color: white; }
+
+        /* Messages */
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--secondary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .progress-steps {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .progress-steps::before, .progress-bar { display: none; }
+            .step { display: flex; align-items: center; gap: 15px; }
+            .step-icon { margin: 0; }
+            .tracking-header { flex-direction: column; text-align: center; }
+            .tracking-search { justify-content: center; }
+            .tracking-search input { width: 200px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container container">
+                <div class="logo">
+                    <a href="{{ url_for('index') }}">Bandozee</a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('order_tracking') }}" class="active">Track Order</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                    {% if session.user_id %}
+                    <li><a href="{{ url_for('cart') }}">Cart</a></li>
+                
+                    <li><a href="{{ url_for('logout') }}">Logout ({{ session.user_name }})</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container main-content">
+        <div class="page-header">
+            <h1>Order Tracking</h1>
+            <p>Track your order status in real-time</p>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'message' else 'info' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="order-tracking">
+            <div class="tracking-header">
+                <div class="order-info">
+                    {% if order %}
+                    <div class="order-number">Order #{{ order[0] }}</div>
+                    <div class="order-date">Placed on: {{ order[4] }}</div>
+                    {% else %}
+                    <div class="order-number">Enter Order ID to Track</div>
+                    <div class="order-date">Check your order status anytime</div>
+                    {% endif %}
+                </div>
+                <form class="tracking-search" method="GET" action="{{ url_for('order_tracking') }}">
+                    <input type="text" name="order_id" placeholder="Enter Order ID" value="{{ request.args.get('order_id', '') }}" required>
+                    <button type="submit">Track Order</button>
+                </form>
+            </div>
+
+            {% if order %}
+            <div class="progress-tracking">
+                <div class="progress-steps">
+<!-- Debug: Remove this after testing -->
+<p style="display: none;">Order object: {{ order }}, Status: {{ order.status if order else 'No order' }}</p>
+                    <div class="step {% if order[3] in ['pending','processing','shipped','delivered','completed'] %}completed{% endif %} {% if order[3]=='pending' %}active{% endif %}">
+                        <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
+                        <div class="step-label">Order Placed</div>
+                    </div>
+
+                    <div class="step {% if order[3] in ['processing','shipped','delivered','completed'] %}completed{% endif %} {% if order[3]=='processing' %}active{% endif %}">
+                        <div class="step-icon"><i class="fas fa-cog"></i></div>
+                        <div class="step-label">Processing</div>
+                    </div>
+
+                    <div class="step {% if order[3] in ['shipped','delivered','completed'] %}completed{% endif %} {% if order[3]=='shipped' %}active{% endif %}">
+                        <div class="step-icon"><i class="fas fa-shipping-fast"></i></div>
+                        <div class="step-label">Shipped</div>
+                    </div>
+
+                    <div class="step {% if order[3] in ['delivered','completed'] %}completed{% endif %} {% if order[3]=='delivered' %}active{% endif %}">
+                        <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="step-label">Delivered</div>
+                    </div>
+                </div>
+
+                <div class="current-status">
+                    <h3>Current Status: 
+                        <span class="status-badge 
+                            {% if order[3]=='pending' %}status-pending
+                            {% elif order[3]=='processing' %}status-processing
+                            {% elif order[3]=='shipped' %}status-shipped
+                            {% elif order[3]=='delivered' %}status-delivered
+                            {% elif order[3]=='completed' %}status-completed
+                            {% elif order[3]=='cancelled' %}status-cancelled
+                            {% endif %}">
+                            {{ order[3]|title }}
+                        </span>
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Order Details -->
+            <div class="order-details">
+                <h2>Order Details</h2>
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <h3><i class="fas fa-user"></i> Customer Information</h3>
+                        <p><strong>Name:</strong> 
+                            {% for user in users %}
+                                {% if user[0] == order[1] %}
+                                    {{ user[1] }}
+                                {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p><strong>Email:</strong> 
+                            {% for user in users %}
+                                {% if user[0] == order[1] %}
+                                    {{ user[2] }}
+                                {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3><i class="fas fa-money-bill-wave"></i> Payment Information</h3>
+                        <p><strong>Total Amount:</strong> R{{ "%.2f"|format(order[2]) }}</p>
+                        <p><strong>Status:</strong> 
+                            <span class="status-badge status-completed">Paid</span>
+                        </p>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3><i class="fas fa-truck"></i> Shipping Information</h3>
+                        <p><strong>Status:</strong> 
+                            {% if order[3] == 'delivered' %}
+                                Delivered on {{ order[4] }}
+                            {% elif order[3] == 'shipped' %}
+                                Shipped - In Transit
+                            {% else %}
+                                Preparing for shipment
+                            {% endif %}
+                        </p>
+                        <p><strong>Estimated Delivery:</strong> 
+                            {% if order[3] == 'delivered' %}
+                                Delivered
+                            {% else %}
+                                3-5 business days
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="order-items">
+                <h2>Order Items</h2>
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order_items %}
+                        <tr>
+                            <td>
+                                <strong>
+                                    {% for product in products %}
+                                        {% if product[0] == item[2] %}
+                                            {{ product[1] }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </strong>
+                            </td>
+                            <td>R{{ "%.2f"|format(item[4]) }}</td>
+                            <td>{{ item[3] }}</td>
+                            <td>R{{ "%.2f"|format(item[4] * item[3]) }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="3" style="text-align: right; font-weight: bold;">Total:</td>
+                            <td style="font-weight: bold;">R{{ "%.2f"|format(order[2]) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            {% elif request.args.get('order_id') %}
+            <div class="no-order" style="text-align: center; padding: 40px;">
+                <i class="fas fa-search fa-3x" style="color: #ccc; margin-bottom: 20px;"></i>
+                <h3>No Order Found</h3>
+                <p>Please check your Order ID and try again.</p>
+                <p style="color: #666; font-size: 14px; margin-top: 10px;">
+                    Order IDs are numbers like 1, 2, 3, etc. Check your confirmation email for the correct ID.
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h3>Bandozee</h3>
+                <p>Traditional Attire for Modern Souls</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                    <li><a href="{{ url_for('order_tracking') }}">Track Order</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><i class="fas fa-envelope"></i> support@bandozee.co.za</p>
+                <p><i class="fas fa-phone"></i> +27 11 123 4567</p>
+                <p><i class="fas fa-map-marker-alt"></i> Johannesburg, South Africa</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2023 Bandozee. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Auto-refresh order status every 30 seconds if tracking an order
+        setInterval(() => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('order_id')) {
+                window.location.reload();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

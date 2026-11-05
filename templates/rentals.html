@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent Traditional Attire - Bandozee</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .rental-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .rental-filters {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .filter-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+        }
+        .filter-btn.active {
+            background-color: #E41B23;
+            color: white;
+        }
+        .rental-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .rental-product {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .rental-product img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .rental-price {
+            font-size: 1.5rem;
+            color: #E41B23;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .rental-form {
+            margin-top: 15px;
+        }
+        .rental-form select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <a href="{{ url_for('index') }}">Bandozee</a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('rentals') }}" class="active">Rentals</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                    {% if session.user_id %}
+                    <li><a href="{{ url_for('cart') }}">Cart</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout ({{ session.user_name }})</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="rental-container">
+        <h1>Rent Traditional Attire</h1>
+        <p>Experience the beauty of traditional attire without commitment. Perfect for special occasions!</p>
+        
+        <div class="rental-filters">
+            <a href="{{ url_for('rentals') }}" class="filter-btn {% if not gender %}active{% endif %}">All</a>
+            <a href="{{ url_for('rentals', gender='Men') }}" class="filter-btn {% if gender == 'Men' %}active{% endif %}">Men's Wear</a>
+            <a href="{{ url_for('rentals', gender='Women') }}" class="filter-btn {% if gender == 'Women' %}active{% endif %}">Women's Wear</a>
+            <a href="{{ url_for('rentals', gender='Unisex') }}" class="filter-btn {% if gender == 'Unisex' %}active{% endif %}">Unisex</a>
+        </div>
+
+        <div class="rental-products">
+            {% for product in rental_products %}
+            <div class="rental-product">
+                <img src="{{ product[8] }}" alt="{{ product[1] }}">
+                <h3>{{ product[1] }}</h3>
+                <p>{{ product[4] }}</p>
+                <div class="rental-price">R{{ "%.2f"|format(product[3]) }}/day</div>
+                <p><strong>Buy: R{{ "%.2f"|format(product[2]) }}</strong></p>
+                
+                <form method="POST" action="{{ url_for('rent_product', product_id=product[0]) }}" class="rental-form">
+                    <select name="rental_days" required>
+                        <option value="">Select Duration</option>
+                        <option value="1">1 Day</option>
+                        <option value="2">2 Days</option>
+                        <option value="3">3 Days</option>
+                        <option value="7">7 Days</option>
+                        <option value="14">14 Days</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Rent Now</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Bandozee Traditional Attire</h3>
+                <p>Celebrating South African heritage through authentic traditional clothing</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('products') }}">Products</a></li>
+                    <li><a href="{{ url_for('rentals') }}">Rentals</a></li>
+                    <li><a href="{{ url_for('about') }}">About Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p>123 Cultural Village, Durban</p>
+                <p>Phone: +27 (031) 123-4567</p>
+                <p>Email: info@bandozee.co.za</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Bandozee Traditional Attire. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
